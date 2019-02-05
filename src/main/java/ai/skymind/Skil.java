@@ -21,7 +21,7 @@ import com.squareup.okhttp.*;
  */
 public class Skil {
 
-    private Integer workspaceServerId = null;
+    private String workspaceServerId = null;
     private String host = "localhost";
     private int port = 9008;
     private boolean debug = false;
@@ -33,7 +33,7 @@ public class Skil {
     private String token;
     private DefaultApi api = new DefaultApi();
 
-    private Logger logger;
+    private Logger logger = Logger.getLogger(Skil.class.getName());
 
     public Skil() throws Exception {
         determineToken();
@@ -51,7 +51,7 @@ public class Skil {
      * @param debug whether to activate advanced logging
      * @throws ApiException SKIL API exception
      */
-    public Skil(int workspaceServerId, String host, int port, String userId, String password, boolean debug)
+    public Skil(String workspaceServerId, String host, int port, String userId, String password, boolean debug)
             throws ApiException {
         this.workspaceServerId = workspaceServerId;
         this.host = host;
@@ -101,6 +101,10 @@ public class Skil {
         }
     }
 
+    public String getWorkspaceServerId() {
+        return workspaceServerId;
+    }
+
     private String getHost() {
         return this.host;
     }
@@ -109,7 +113,7 @@ public class Skil {
         return api;
     }
 
-    public int getDefaultServerId() throws IOException, Exception {
+    public String getDefaultServerId() throws IOException, Exception {
 
 //        RequestBody reqbody = RequestBody.create(null, new byte[0]);
         String url = "http://" + getHost() + "/services";
@@ -139,7 +143,7 @@ public class Skil {
         //                "Could not detect default model history server instance. Is SKIL running?")
 
 
-        return 0;
+        return "";
     }
 
     public void uploadModel(String modelName) throws ApiException {

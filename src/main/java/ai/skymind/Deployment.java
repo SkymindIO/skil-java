@@ -91,7 +91,7 @@ public class Deployment {
      * @param skil Skil instance
      * @param fileName file name for file with deployment config JSON
      * @return Deployment instance
-     * 
+     *
      * @throws FileNotFoundException File not found
      * @throws ApiException SKIL API exception
      */
