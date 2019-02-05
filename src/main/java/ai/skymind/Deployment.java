@@ -58,7 +58,7 @@ public class Deployment {
     }
 
     /**
-     * Get the deployment config as map
+     * Get the deployment config as Map
      *
      * @return deployment config
      */

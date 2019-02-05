@@ -23,10 +23,11 @@ public class WorkSpace {
     private Skil skil;
     private String id;
     private String name;
-    private Logger logger = Logger.getLogger(WorkSpace.class.getName());
     private boolean verbose = false;
     private String labels;
     private ModelHistoryEntity workSpace;
+
+    private Logger logger = Logger.getLogger(WorkSpace.class.getName());
 
     /**
      * Get a WorkSpace from a ModelHistoryEntity
@@ -67,10 +68,18 @@ public class WorkSpace {
         }
     }
 
+    public Skil getSkil() {
+        return skil;
+    }
+
+    public String getId() {
+        return id;
+    }
+
     public WorkSpace(Skil skil, String name) throws ApiException {
         this(skil, name, "", false);
     }
-    
+
     public WorkSpace(Skil skil) throws  ApiException {
         this(skil, UUID.randomUUID().toString(), "", false);
 
