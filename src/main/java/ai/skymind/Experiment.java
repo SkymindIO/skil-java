@@ -140,6 +140,14 @@ public class Experiment {
         return getExperimentById(workSpace, experimentId);
     }
 
+    public WorkSpace getWorkSpace() {
+        return workSpace;
+    }
+
+    public String getId() {
+        return id;
+    }
+
     public static Experiment getExperimentById(WorkSpace workSpace, String experimentId) throws ApiException {
         return new Experiment(workSpace, experimentId);
     }
