@@ -1,9 +1,14 @@
 package ai.skymind.models;
 
 import ai.skymind.*;
+import ai.skymind.services.Service;
+import ai.skymind.skil.model.ImportModelRequest;
+import ai.skymind.skil.model.ModelEntity;
 import ai.skymind.skil.model.ModelInstanceEntity;
+import ai.skymind.skil.model.EvaluationResultsEntity;
 
-import java.util.Date;
+
+import java.util.*;
 import java.util.logging.Logger;
 
 
@@ -18,29 +23,46 @@ import java.util.logging.Logger;
  * @author Max Pumperla
  */
 public class Model {
-    // TODO public create constructor
-    // TODO private retrieve constructor
-    // TODO delete model
-    // TODO add evaluation
-    // TODO deploy
-    // TODO undeploy
-    // TODO static getModelById
 
     private Experiment experiment;
     private WorkSpace workSpace;
     private Skil skil;
     private Deployment deployment = null;
+    private ModelEntity modelDeployment;
 
     private String id;
     private String name;
     private String modelPath;
     private String version;
     private String labels;
+    private HashMap<String, EvaluationResultsEntity> evaluations = new HashMap<>();
+
+    private Service service = null;
 
     private Logger logger = Logger.getLogger(Experiment.class.getName());
 
 
-    public Model(String modelFile, String modelId, String name, String version, Experiment experiment, String labels,
+    private Model(String modelId, String modelName, Experiment experiment) throws Exception {
+
+        this.experiment = experiment;
+        this.workSpace = experiment.getWorkSpace();
+        this.skil = this.workSpace.getSkil();
+
+
+        ModelInstanceEntity modelEntity = this.skil.getApi().getModelInstance(
+                this.skil.getWorkspaceServerId(), this.id);
+        this.name = modelEntity.getModelName();
+        this.version = modelEntity.getModelVersion();
+        this.modelPath = modelEntity.getUri();
+
+    }
+
+    public Model(String modelFile, Experiment experiment) throws  Exception {
+        this(modelFile, experiment, "id_" + UUID.randomUUID().toString(),
+                "name_" + UUID.randomUUID().toString(), "1", "", false);
+    }
+
+    public Model(String modelFile, Experiment experiment, String modelId, String name, String version, String labels,
                  boolean verbose) throws Exception {
 
         this.experiment = experiment;
@@ -55,9 +77,6 @@ public class Model {
         this.id = modelId;
         this.name = name;
         this.version = version;
-
-//        this.evaluations = {}
-//        this.modelDeployment = None
 
         Long created = (new Date().getTime()/1000);
 
@@ -77,4 +96,70 @@ public class Model {
         }
     }
 
+    public void deploy(Deployment deployment, boolean startServer, int scale,
+                          List<String> inputNames, List<String> outputNames, boolean verbose)
+    throws ApiException {
+
+        List<String> uris = new ArrayList<String>();
+        uris.add(deployment.getName() + "/model/" + name + "/default");
+        uris.add(deployment.getName() + "/model/" + name + "/default");
+
+        if (this.service == null) {
+            ImportModelRequest request = new ImportModelRequest().name(this.name).scale(scale).uri(uris)
+                    .modelType("model").fileLocation(this.modelPath).inputNames(inputNames).outputNames(outputNames);
+
+
+            //TODO from Python: self.deployment = deployment.response ???
+            this.deployment = deployment;
+
+            List<ModelEntity> models = skil.getApi().models(this.deployment.getDeploymentId());
+            ModelEntity deployedModel = null;
+            for (ModelEntity model: models) {
+                if (model.getName().equals(this.name)) {
+                    deployedModel = model;
+                }
+            }
+            if (deployedModel != null) {
+                this.modelDeployment = deployedModel;
+            } else {
+                this.modelDeployment = skil.getApi().deployModel(this.deployment.getDeploymentId(), request);
+                if (verbose) {
+                    logger.info(this.modelDeployment.toString());
+                }
+            }
+
+            this.service = new Service(this.skil, this, this.deployment, this.modelDeployment);
+
+            if (startServer) {
+                this.service.start();
+            }
+        }
+    }
+
+    public void addEvaluation(double accuracy, String evalId, String name, Integer version) throws Exception {
+        // TODO defaults for id, name, version
+        Long created = (new Date().getTime()/1000);
+
+        EvaluationResultsEntity evaluationResultsEntity = new EvaluationResultsEntity().evaluation("")
+                .created(created).evalName(name).evalVersion(version).evalId(evalId)
+                .modelInstanceId(this.id).accuracy(accuracy);
+
+        skil.getApi().addEvaluationResult(skil.getDefaultServerId(), evaluationResultsEntity);
+        this.evaluations.put(evalId, evaluationResultsEntity);
+
+    }
+
+    public void undeploy() throws ApiException {
+        skil.getApi().deleteModel(this.deployment.getDeploymentId(), this.id);
+    }
+
+
+    public void delete() throws ApiException {
+        skil.getApi().deleteModelInstance(this.skil.getWorkspaceServerId(), this.id);
+    }
+
+
+    public static Model getModelById(Experiment experiment, String modelId) throws Exception {
+        return new Model(modelId, "", experiment);
+    }
 }

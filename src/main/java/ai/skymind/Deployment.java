@@ -116,4 +116,12 @@ public class Deployment {
     public static Deployment getDeploymentById(Skil skil, String deploymentId) throws ApiException {
         return new Deployment(skil, "", deploymentId);
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDeploymentId() {
+        return deploymentId;
+    }
 }
