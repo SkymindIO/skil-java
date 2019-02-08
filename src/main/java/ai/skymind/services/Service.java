@@ -20,6 +20,8 @@ public class Service {
     // TODO predict_single
     // TODO detect_objects
 
+    public Service() {}
+
     public Service(Skil skil, Model model, Deployment deployment, ModelEntity modelDeployment) {
 
     }

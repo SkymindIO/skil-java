@@ -8,6 +8,7 @@ import ai.skymind.skil.model.ModelInstanceEntity;
 import ai.skymind.skil.model.EvaluationResultsEntity;
 
 
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -24,33 +25,37 @@ import java.util.logging.Logger;
  */
 public class Model {
 
-    private Experiment experiment;
-    private WorkSpace workSpace;
-    private Skil skil;
-    private Deployment deployment = null;
-    private ModelEntity modelDeployment;
+    protected Experiment experiment;
+    protected WorkSpace workSpace;
+    protected Skil skil;
+    protected Deployment deployment = null;
+    protected ModelEntity modelDeployment;
 
-    private String id;
-    private String name;
-    private String modelPath;
-    private String version;
-    private String labels;
-    private HashMap<String, EvaluationResultsEntity> evaluations = new HashMap<>();
+    protected String id;
+    protected String name;
+    protected String modelPath;
+    protected String version;
+    protected String labels;
+    protected HashMap<String, EvaluationResultsEntity> evaluations = new HashMap<>();
 
-    private Service service = null;
+    protected Service service = null;
 
-    private Logger logger = Logger.getLogger(Experiment.class.getName());
+    private Logger logger = Logger.getLogger(Model.class.getName());
+
+    public Model() {}
 
 
-    private Model(String modelId, String modelName, Experiment experiment) throws Exception {
+    private Model(String modelId, Experiment experiment, String modelName) throws Exception {
 
         this.experiment = experiment;
         this.workSpace = experiment.getWorkSpace();
         this.skil = this.workSpace.getSkil();
+        this.id = modelId;
 
 
         ModelInstanceEntity modelEntity = this.skil.getApi().getModelInstance(
                 this.skil.getWorkspaceServerId(), this.id);
+
         this.name = modelEntity.getModelName();
         this.version = modelEntity.getModelVersion();
         this.modelPath = modelEntity.getUri();
@@ -77,6 +82,7 @@ public class Model {
         this.id = modelId;
         this.name = name;
         this.version = version;
+        this.labels = labels;
 
         Long created = (new Date().getTime()/1000);
 
@@ -88,6 +94,7 @@ public class Model {
                         .modelLabels(this.labels)
                         .modelName(this.name)
                         .modelVersion(this.version)
+                        .modelLabels(this.labels)
                         .created(created)
                         .experimentId(this.experiment.getId())
                 );
@@ -98,7 +105,7 @@ public class Model {
 
     public void deploy(Deployment deployment, boolean startServer, int scale,
                           List<String> inputNames, List<String> outputNames, boolean verbose)
-    throws ApiException {
+            throws ApiException, IOException {
 
         List<String> uris = new ArrayList<String>();
         uris.add(deployment.getName() + "/model/" + name + "/default");
@@ -160,6 +167,6 @@ public class Model {
 
 
     public static Model getModelById(Experiment experiment, String modelId) throws Exception {
-        return new Model(modelId, "", experiment);
+        return new Model(modelId, experiment, "");
     }
 }
