@@ -3,6 +3,7 @@ package ai.skymind.jobs;
 import ai.skymind.models.Model;
 import ai.skymind.resources.compute.ComputeResource;
 import ai.skymind.resources.storage.StorageResource;
+import lombok.Data;
 
 /**JobConfiguration
  * A SKIL job configuration collects all data needed to set up and run a SKIL Job.
@@ -11,6 +12,7 @@ import ai.skymind.resources.storage.StorageResource;
  *
  * @author Max Pumperla
  */
+@Data
 public abstract class JobConfiguration {
 
     private Model model;

@@ -2,6 +2,7 @@ package ai.skymind.resources;
 
 import ai.skymind.ApiException;
 import ai.skymind.Skil;
+import lombok.Data;
 
 /**
  * Resource
@@ -11,6 +12,7 @@ import ai.skymind.Skil;
  *
  * @author Max Pumperla
  */
+@Data
 public class Resource {
 
     protected Skil skil;

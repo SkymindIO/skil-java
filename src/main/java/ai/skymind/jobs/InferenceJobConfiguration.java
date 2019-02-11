@@ -3,6 +3,7 @@ package ai.skymind.jobs;
 import ai.skymind.models.Model;
 import ai.skymind.resources.compute.ComputeResource;
 import ai.skymind.resources.storage.StorageResource;
+import lombok.Data;
 
 /** InferenceJobConfiguration
  *
@@ -11,6 +12,7 @@ import ai.skymind.resources.storage.StorageResource;
  *
  * @author Max Pumperla
  */
+@Data
 public class InferenceJobConfiguration extends JobConfiguration {
 
     private int batchSize;

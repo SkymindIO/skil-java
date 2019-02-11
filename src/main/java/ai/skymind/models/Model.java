@@ -103,6 +103,10 @@ public class Model {
         }
     }
 
+    public String getModelPath() {
+        return modelPath;
+    }
+
     public void deploy(Deployment deployment, boolean startServer, int scale,
                           List<String> inputNames, List<String> outputNames, boolean verbose)
             throws ApiException, IOException {

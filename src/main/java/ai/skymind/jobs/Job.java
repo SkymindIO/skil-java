@@ -1,6 +1,7 @@
 package ai.skymind.jobs;
 
 import ai.skymind.Skil;
+import ai.skymind.skil.model.JobEntity;
 
 /**Job
  *
@@ -11,10 +12,10 @@ import ai.skymind.Skil;
  */
 public class Job {
 
-    private String jobId;
-    private String runId;
+    protected Long jobId;
+    protected String runId;
     protected Skil skil;
-    // private Status status;
+    protected JobEntity.StatusEnum status;
 
     public Job(Skil skil) {
         this.skil = skil;
