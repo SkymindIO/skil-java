@@ -50,12 +50,11 @@ public class HDInsight extends Resource {
                 .credentialUri(this.credentialUri)
                 .resourceDetails(details.toString())
                 .type(AddResourceRequest.TypeEnum.COMPUTE)
-                .subType(AddResourceRequest.SubTypeEnum.DATAPROC);
+                .subType(AddResourceRequest.SubTypeEnum.HDINSIGHT);
 
         Object response = this.skil.getApi().addResource(request);
 
         // TODO test if this casting works
         this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
-    }
     }
 }
