@@ -6,6 +6,8 @@ import ai.skymind.resources.Resource;
 import ai.skymind.skil.model.AddResourceRequest;
 import ai.skymind.skil.model.EMRResourceDetails;
 
+import java.util.Map;
+
 /** EMR
  *
  * AWS Elastic Map Reduce compute resource
@@ -44,7 +46,13 @@ public class EMR extends Resource {
                 .type(AddResourceRequest.TypeEnum.COMPUTE)
                 .subType(AddResourceRequest.SubTypeEnum.EMR);
 
-        this.skil.getApi().addResource(request);
+        Object response = this.skil.getApi().addResource(request);
 
+        // TODO test if this casting works
+        this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
+    }
+
+    public EMR(Skil skil, Long resourceId) {
+        super(skil, resourceId);
     }
 }

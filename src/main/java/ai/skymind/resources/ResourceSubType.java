@@ -11,4 +11,6 @@ public enum ResourceSubType {
     AzureStorage,      // Azure Blob Storage
     HDFS                // In-house Hadoop distributed file system
 
+    // TODO: we leave out YARN, as it will be removed
+
 }
