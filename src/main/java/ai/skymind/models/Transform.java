@@ -8,7 +8,6 @@ import ai.skymind.services.TransformImageService;
 import ai.skymind.skil.model.ImportModelRequest;
 import ai.skymind.skil.model.ModelEntity;
 import ai.skymind.skil.model.ModelInstanceEntity;
-import ai.skymind.skil.model.TransformProcess;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,8 +25,7 @@ import java.util.logging.Logger;
  * @author Max Pumperla
  */
 public class Transform extends Model {
-    // TODO deploy
-    // TODO static getTransformById
+
     private Logger logger = Logger.getLogger(Transform.class.getName());
 
     private String transformType;
