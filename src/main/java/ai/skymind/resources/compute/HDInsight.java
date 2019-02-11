@@ -57,4 +57,8 @@ public class HDInsight extends Resource {
         // TODO test if this casting works
         this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
     }
+
+    public HDInsight(Skil skil, Long resourceId) {
+        super(skil, resourceId);
+    }
 }

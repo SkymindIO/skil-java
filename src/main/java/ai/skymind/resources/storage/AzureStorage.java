@@ -49,4 +49,8 @@ public class AzureStorage extends Resource {
         // TODO test if this casting works
         this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
     }
+
+    public AzureStorage(Skil skil, Long resourceId) {
+        super(skil, resourceId);
+    }
 }

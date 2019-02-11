@@ -53,4 +53,8 @@ public class HDFS extends Resource {
         // TODO test if this casting works
         this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
     }
+
+    public HDFS(Skil skil, Long resourceId) {
+        super(skil, resourceId);
+    }
 }
