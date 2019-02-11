@@ -1,5 +1,6 @@
 package ai.skymind.resources;
 
+
 public enum ResourceSubType {
 
     EMR,                // AWS Elastic Map Reduce(Compute)
