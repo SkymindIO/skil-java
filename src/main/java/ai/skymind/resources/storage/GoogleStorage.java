@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Max Pumperla
  */
-public class GoogleStorage extends Resource {
+public class GoogleStorage extends StorageResource {
 
     private String name;
     private String credentialUri;

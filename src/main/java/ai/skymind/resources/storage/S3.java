@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Max Pumperla
  */
-public class S3 extends Resource {
+public class S3 extends StorageResource {
 
     private String name;
     private String bucket;

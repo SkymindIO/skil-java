@@ -2,7 +2,6 @@ package ai.skymind.resources.compute;
 
 import ai.skymind.ApiException;
 import ai.skymind.Skil;
-import ai.skymind.resources.Resource;
 import ai.skymind.skil.model.AddResourceRequest;
 import ai.skymind.skil.model.DataProcResourceDetails;
 
@@ -15,7 +14,7 @@ import java.util.Map;
  *
  * @author Max Pumperla
  */
-public class DataProc extends Resource {
+public class DataProc extends ComputeResource {
 
     private String name;
     private String projectId;

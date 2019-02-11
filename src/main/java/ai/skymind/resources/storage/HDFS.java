@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Max Pumperla
  */
-public class HDFS extends Resource {
+public class HDFS extends StorageResource {
 
     private String name;
     private String nameNodeHost;
