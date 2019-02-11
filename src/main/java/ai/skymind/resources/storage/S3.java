@@ -53,7 +53,18 @@ public class S3 extends Resource {
         this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
     }
 
-    public S3(Skil skil, Long resourceId) {
+    /**
+     *
+     * @param skil SKIL instance
+     * @param name resource name
+     * @param bucket S3 bucket
+     * @param region AWS region
+     * @param resourceId SKIL resource ID
+     */
+    public S3(Skil skil, String name, String bucket, String region, Long resourceId) {
         super(skil, resourceId);
+        this.name = name;
+        this.bucket = bucket;
+        this.region = region;
     }
 }

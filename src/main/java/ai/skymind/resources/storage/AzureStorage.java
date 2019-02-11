@@ -50,7 +50,9 @@ public class AzureStorage extends Resource {
         this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
     }
 
-    public AzureStorage(Skil skil, Long resourceId) {
+    public AzureStorage(Skil skil, String name, String containerName, Long resourceId) {
         super(skil, resourceId);
+        this.name = name;
+        this.containerName = containerName;
     }
 }

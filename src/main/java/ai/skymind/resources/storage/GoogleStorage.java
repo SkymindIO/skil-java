@@ -54,7 +54,18 @@ public class GoogleStorage extends Resource {
         this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
     }
 
-    public GoogleStorage(Skil skil, Long resourceId) {
+    /**
+     *
+     * @param skil Skil instance
+     * @param name resource name
+     * @param projectId GCE project ID
+     * @param bucketName GCE bucket name
+     * @param resourceId SKIL resource ID
+     */
+    public GoogleStorage(Skil skil, String name, String projectId, String bucketName, Long resourceId) {
         super(skil, resourceId);
+        this.name = name;
+        this.projectId = projectId;
+        this.bucketName = bucketName;
     }
 }

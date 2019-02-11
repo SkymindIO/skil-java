@@ -52,7 +52,19 @@ public class EMR extends Resource {
         this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
     }
 
-    public EMR(Skil skil, Long resourceId) {
+    /**
+     *
+     * @param skil SKIL instance
+     * @param name resource name
+     * @param region AWS region
+     * @param clusterId EMR cluster ID
+     * @param resourceId SKIL resource ID
+     */
+    public EMR(Skil skil, String name, String region, String clusterId, Long resourceId) {
         super(skil, resourceId);
+        this.name = name;
+        this.region = region;
+        this.clusterId = clusterId;
+        this.resourceId = resourceId;
     }
 }

@@ -58,7 +58,12 @@ public class HDInsight extends Resource {
         this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
     }
 
-    public HDInsight(Skil skil, Long resourceId) {
+    public HDInsight(Skil skil, String name, String subscriptionId, String resourceGroupName,
+                     String clusterName, Long resourceId) {
         super(skil, resourceId);
+        this.name = name;
+        this.subscriptionId = subscriptionId;
+        this.resourceGroupName = resourceGroupName;
+        this.clusterName = clusterName;
     }
 }

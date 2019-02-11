@@ -54,7 +54,18 @@ public class HDFS extends Resource {
         this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
     }
 
-    public HDFS(Skil skil, Long resourceId) {
+    /**
+     *
+     * @param skil Skil instance
+     * @param name Resource name
+     * @param nameNodeHost name node host url
+     * @param nameNodePort name node port
+     * @param resourceId SKIL resource ID
+     */
+    public HDFS(Skil skil, String name, String nameNodeHost, String nameNodePort, Long resourceId) {
         super(skil, resourceId);
+        this.name = name;
+        this.nameNodeHost = nameNodeHost;
+        this.nameNodePort = nameNodePort;
     }
 }

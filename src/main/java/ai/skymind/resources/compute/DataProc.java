@@ -61,7 +61,11 @@ public class DataProc extends Resource {
         this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
     }
 
-    public DataProc(Skil skil, Long resourceId) {
+    public DataProc(Skil skil, String name, String projectId, String region, String clusterName, Long resourceId) {
         super(skil, resourceId);
+        this.name = name;
+        this.projectId = projectId;
+        this.region = region;
+        this.clusterName = clusterName;
     }
 }
