@@ -13,8 +13,13 @@ import ai.skymind.Skil;
  */
 public class Resource {
 
-    private Skil skil;
-    private Long resourceId;
+    protected Skil skil;
+    protected Long resourceId = null;
+
+    public Resource(Skil skil) {
+
+        this.skil = skil;
+    }
 
     public Resource(Skil skil, Long resourceId) {
 
