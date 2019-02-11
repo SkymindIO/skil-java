@@ -4,7 +4,7 @@ import ai.skymind.models.Model;
 import ai.skymind.resources.compute.ComputeResource;
 import ai.skymind.resources.storage.StorageResource;
 
-/**InferenceJobConfiguration
+/** InferenceJobConfiguration
  *
  * Configuration for a SKIL inference job. On top of what you need to specify for a base JobConfiguration,
  * you need to set the batch size for the model as well.
