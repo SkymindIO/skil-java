@@ -133,7 +133,7 @@ public class Utils {
                         resourceId);
                 break;
             case AZURESTORAGE:
-                res = new AzureStorage(skil, resource.getName(), (String) details.get("containerName"), resourceId)
+                res = new AzureStorage(skil, resource.getName(), (String) details.get("containerName"), resourceId);
                 break;
             default:
                 throw new IOException("Unsupported resource type " + resourceType.toString());
