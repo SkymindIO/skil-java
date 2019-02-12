@@ -59,7 +59,7 @@ public class InferenceJob extends Job {
 
 
     private String getJobArgs() {
-        
+
         InferenceJobConfiguration ic = this.inferenceConfig;
         String inference = "-i true";
         String output = "-o " + ic.getOutputPath();
