@@ -6,6 +6,7 @@ import ai.skymind.skil.model.ImportModelRequest;
 import ai.skymind.skil.model.ModelEntity;
 import ai.skymind.skil.model.ModelInstanceEntity;
 import ai.skymind.skil.model.EvaluationResultsEntity;
+import lombok.Data;
 
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.util.logging.Logger;
  *
  * @author Max Pumperla
  */
+@Data
 public class Model {
 
     protected Experiment experiment;
@@ -107,9 +109,13 @@ public class Model {
         return modelPath;
     }
 
-    public void deploy(Deployment deployment, boolean startServer, int scale,
+    public String getName() {
+        return name;
+    }
+
+    public Service deploy(Deployment deployment, boolean startServer, int scale,
                           List<String> inputNames, List<String> outputNames, boolean verbose)
-            throws ApiException, IOException {
+            throws ApiException, IOException, InterruptedException {
 
         List<String> uris = new ArrayList<String>();
         uris.add(deployment.getName() + "/model/" + name + "/default");
@@ -145,6 +151,7 @@ public class Model {
                 this.service.start();
             }
         }
+        return this.service;
     }
 
     public void addEvaluation(double accuracy, String evalId, String name, Integer version) throws Exception {

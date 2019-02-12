@@ -83,9 +83,9 @@ public class Transform extends Model {
         }
     }
 
-    public void deploy(Deployment deployment, boolean startServer, int scale,
+    public Service deploy(Deployment deployment, boolean startServer, int scale,
                        List<String> inputNames, List<String> outputNames, boolean verbose)
-            throws ApiException, IOException {
+            throws ApiException, IOException, InterruptedException {
 
         List<String> uris = new ArrayList<String>();
         // TODO: those endpoints should be called "transform"
@@ -132,6 +132,7 @@ public class Transform extends Model {
                 this.service.start();
             }
         }
+        return this.service;
     }
 
     public static Transform getTransformById(Experiment experiment, String transformId) throws Exception {

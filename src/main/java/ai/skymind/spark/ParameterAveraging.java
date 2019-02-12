@@ -21,16 +21,15 @@ public class ParameterAveraging implements DistributedConfiguration {
     private int numBatchesPrefetch = 0;
     private boolean collectStats = false;
 
-
     /**
      * @param numWorkers number of Spark workers to use
      * @param batchSize batch size used for training data
      */
     public ParameterAveraging(int numWorkers, int batchSize) {
+
         this.numWorkers = numWorkers;
         this.batchSize = batchSize;
     }
-
 
 
     /**
@@ -42,6 +41,7 @@ public class ParameterAveraging implements DistributedConfiguration {
      */
     public ParameterAveraging(int numWorkers, int batchSize, int averagingFrequency,
                               int numBatchesPrefetch, boolean collectStats) {
+
         this.numWorkers = numWorkers;
         this.batchSize = batchSize;
         this.averagingFrequency = averagingFrequency;
@@ -52,6 +52,7 @@ public class ParameterAveraging implements DistributedConfiguration {
 
     @Override
     public String toJson() {
+
         Map<String, Object> config = new HashMap<>();
         config.put("numWorkers", numWorkers);
         config.put("batchSize", batchSize);
