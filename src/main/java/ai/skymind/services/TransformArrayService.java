@@ -24,15 +24,15 @@ public class TransformArrayService extends Service {
         super(skil, model, deployment, modelDeployment);
     }
 
-    public String predict(BatchRecord data, String version) throws ApiException {
+    public Base64NDArrayBody predict(BatchRecord data, String version) throws ApiException {
 
         Base64NDArrayBody array = skil.getApi().transformarray(deployment.getName(), version, model.getName(), data);
-        return array.getNdarray();
+        return array;
     }
 
-    public String predictSingle(SingleRecord data, String version) throws ApiException {
+    public Base64NDArrayBody predictSingle(SingleRecord data, String version) throws ApiException {
         Base64NDArrayBody array = skil.getApi().transformincrementalarray(deployment.getName(),
                 version, model.getName(), data);
-        return array.getNdarray();
+        return array;
     }
 }
