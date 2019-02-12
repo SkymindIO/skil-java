@@ -20,14 +20,6 @@ docker pull skymindops/skil-ce
 docker run --rm -it -p 9008:9008 skymindops/skil-ce bash /start-skil.sh
 ```
 
-## Requirements
-
-Building the API client library requires:
-1. Java 1.7+
-2. Maven/Gradle
-
-## Installation
-
 You'll need Java 1.7+ and Maven (or Gradle) to build this project. To install the API client 
 library to your local Maven repository, simply execute:
 
