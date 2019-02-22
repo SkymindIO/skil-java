@@ -1,5 +1,7 @@
 # SKIL: Deep learning model lifecycle management for humans
 
+## WARNING: This project is still pre-release and needs more testing. 
+
 ## Java client for Skymind's intelligence layer (SKIL)
 
 SKIL is an end-to-end deep learning platform. Think of it as a unified front-end for your deep learning training and deployment process. SKIL supports many popular deep learning libraries, such as Keras, TensorFlow and Deeplearning4J. SKIL increases time-to-value of your AI applications by closing the common gap between experiments and production - bringing models to production fast and keeping them there. SKIL effectively acts as middleware for your AI applications and solves a range of common _production_ problems, namely:
