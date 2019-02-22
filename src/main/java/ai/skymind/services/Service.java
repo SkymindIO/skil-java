@@ -107,7 +107,7 @@ public class Service {
         int[] intArray = Arrays.stream(shape).mapToInt(i -> (int) i).toArray();
         List intList = Arrays.asList(intArray);
 
-        float[] floatArr = array.toFloatVector();
+        float[] floatArr = array.data().asFloat();
         List floatList = Arrays.asList(floatArr);
 
         return new ai.skymind.skil.model.INDArray()
@@ -129,14 +129,14 @@ public class Service {
         float[] floatData = data.stream().collect(
                 ()-> FloatBuffer.allocate(data.size()),
                 FloatBuffer::put,
-                (left, right) -> { throw new UnsupportedOperationException("only be called in parallel stream");
+                (left, right) -> { throw new UnsupportedOperationException("only to be called in parallel stream");
                 }
         ).array();
 
         int[] intShape = shape.stream().collect(
                 () -> IntBuffer.allocate(shape.size()),
                 IntBuffer::put,
-                (left, right) -> { throw new UnsupportedOperationException("only be called in parallel stream");
+                (left, right) -> { throw new UnsupportedOperationException("only to be called in parallel stream");
                 }
         ).array();
 

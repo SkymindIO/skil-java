@@ -9,6 +9,7 @@ import ai.skymind.skil.model.ImportModelRequest;
 import ai.skymind.skil.model.ModelEntity;
 import ai.skymind.skil.model.ModelInstanceEntity;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,7 +47,7 @@ public class Transform extends Model {
 
     }
 
-    public Transform(String transformFile, String transformType, Experiment experiment, String transformId,
+    public Transform(File transformFile, String transformType, Experiment experiment, String transformId,
                      String name, String version, String labels, boolean verbose) throws ApiException, Exception {
 
         this.experiment = experiment;
@@ -57,7 +58,6 @@ public class Transform extends Model {
         // TODO proper file path
         skil.uploadModel(transformFile);
 
-        this.name = transformFile;
         this.modelPath = skil.getModelPath(transformFile);
         this.id = transformId;
         this.name = name;

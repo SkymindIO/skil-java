@@ -1,0 +1,36 @@
+{
+  "actionList" : [ {
+    "transform" : {
+      "@class" : "org.datavec.api.transform.transform.categorical.CategoricalToOneHotTransform",
+      "columnName" : "Species"
+    }
+  } ],
+  "initialSchema" : {
+    "@class" : "org.datavec.api.transform.schema.Schema",
+    "columns" : [ {
+      "@class" : "org.datavec.api.transform.metadata.DoubleMetaData",
+      "name" : "Sepal length",
+      "allowInfinite" : false,
+      "allowNaN" : false
+    }, {
+      "@class" : "org.datavec.api.transform.metadata.DoubleMetaData",
+      "name" : "Sepal width",
+      "allowInfinite" : false,
+      "allowNaN" : false
+    }, {
+      "@class" : "org.datavec.api.transform.metadata.DoubleMetaData",
+      "name" : "Petal length",
+      "allowInfinite" : false,
+      "allowNaN" : false
+    }, {
+      "@class" : "org.datavec.api.transform.metadata.DoubleMetaData",
+      "name" : "Petal width",
+      "allowInfinite" : false,
+      "allowNaN" : false
+    }, {
+      "@class" : "org.datavec.api.transform.metadata.CategoricalMetaData",
+      "name" : "Species",
+      "stateNames" : [ "Iris-setosa", "Iris-versicolor", "Iris-virginica" ]
+    } ]
+  }
+}
