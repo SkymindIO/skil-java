@@ -9,6 +9,7 @@ import ai.skymind.skil.model.EvaluationResultsEntity;
 import lombok.Data;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
@@ -64,22 +65,20 @@ public class Model {
 
     }
 
-    public Model(String modelFile, Experiment experiment) throws  Exception {
+    public Model(File modelFile, Experiment experiment) throws  Exception {
         this(modelFile, experiment, "id_" + UUID.randomUUID().toString(),
                 "name_" + UUID.randomUUID().toString(), "1", "", false);
     }
 
-    public Model(String modelFile, Experiment experiment, String modelId, String name, String version, String labels,
+    public Model(File modelFile, Experiment experiment, String modelId, String name, String version, String labels,
                  boolean verbose) throws Exception {
 
         this.experiment = experiment;
         this.workSpace = experiment.getWorkSpace();
         this.skil = this.workSpace.getSkil();
 
-        // TODO get proper path from resources
         this.skil.uploadModel(modelFile);
 
-        this.name = modelFile;
         this.modelPath = skil.getModelPath(modelFile);
         this.id = modelId;
         this.name = name;

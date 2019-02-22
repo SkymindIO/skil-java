@@ -9,6 +9,9 @@ import ai.skymind.services.Service;
 import org.junit.Test;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.io.ClassPathResource;
+
+import java.io.File;
 
 public class ModelServingTest {
 
@@ -19,15 +22,15 @@ public class ModelServingTest {
         WorkSpace workSpace = new WorkSpace(skil);
         Experiment experiment = new Experiment(workSpace);
 
-        String modelFile = "keras_model.h5";
+        File modelFile = new File(getClass().getClassLoader().getResource("keras_mnist.h5").getFile());
         Model model = new Model(modelFile, experiment);
 
-        Deployment deployment = new Deployment(skil, "myDeployment");
+        Deployment deployment = new Deployment(skil, "myDeployment42");
         Service service = model.deploy(
                 deployment, true, 10, null, null, false
         );
 
-        INDArray[] data = new INDArray[] {Nd4j.create(100, 784)};
-        service.predict(data, "default");
+//        INDArray[] data = new INDArray[] {Nd4j.create(100, 784)};
+//        service.predict(data, "default");
     }
 }

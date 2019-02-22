@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import ai.skymind.skil.DefaultApi;
@@ -21,24 +22,24 @@ import com.squareup.okhttp.*;
  */
 public class Skil {
 
-    private String workspaceServerId = null;
+    private String workspaceServerId;
     private String host = "localhost";
     private int port = 9008;
     private boolean debug = false;
     private String userId = "admin";
     private String password = "admin";
 
-    private ArrayList<FileUpload> uploads;
-    private ArrayList<String> uploadedModelNames;
+    private ArrayList<FileUpload> uploads = new ArrayList<>();
+    private ArrayList<String> uploadedModelNames = new ArrayList<>();
     private String token;
     private DefaultApi api = new DefaultApi();
 
     private Logger logger = Logger.getLogger(Skil.class.getName());
 
     public Skil() throws Exception {
-        determineToken();
+        this.token = determineToken();
         workspaceServerId = getDefaultServerId();
-
+        setClient();
     }
 
     /**
@@ -60,7 +61,8 @@ public class Skil {
         this.password = password;
         this.debug = debug;
 
-        determineToken();
+        this.token = determineToken();
+        setClient();
     }
 
     /**
@@ -79,8 +81,17 @@ public class Skil {
         this.password = password;
         this.debug = debug;
 
-        determineToken();
+        this.token = determineToken();
         this.workspaceServerId = getDefaultServerId();
+        setClient();
+    }
+
+    private void setClient() {
+        ApiClient client = new ApiClient()
+                .setDebugging(this.debug);
+        client.setApiKey(this.token);
+        client.setApiKeyPrefix("Bearer");
+        this.api.setApiClient(client);
     }
 
 
@@ -89,13 +100,13 @@ public class Skil {
      *
      * @throws ApiException SKIL API exception
      */
-    private void determineToken() throws ApiException {
+    private String determineToken() throws ApiException {
         try {
             LoginRequest login = new LoginRequest();
             login.setUserId(this.userId);
             login.setPassword(this.password);
             LoginResponse response = api.login(login);
-            this.token = response.getToken();
+            return response.getToken();
         } catch (ApiException e) {
             throw new ApiException("Exception when calling 'login' on SKIL's DefaultAPI, " + e.toString());
         }
@@ -109,17 +120,21 @@ public class Skil {
         return this.host;
     }
 
+    private int getPort() {
+        return this.port;
+    }
+
     public DefaultApi getApi() {
         return api;
     }
 
     public String getDefaultServerId() throws IOException, Exception {
 
-//        RequestBody reqbody = RequestBody.create(null, new byte[0]);
-        String url = "http://" + getHost() + "/services";
+
+        String url = "http://" + getHost() + ":" + getPort() + "/services";
         Request.Builder formBody = new Request.Builder()
                 .url(url)
-//                .method("GET",reqbody)
+                .get()
                 .header("Authorization", "Bearer " + this.token);
         OkHttpClient client = new OkHttpClient();
         Response response = client.newCall(formBody.build()).execute();
@@ -129,37 +144,38 @@ public class Skil {
 
         String responseBody = response.body().string();
         Gson gson = new Gson();
-        ApiResponse object = gson.fromJson(responseBody, ApiResponse.class);
-        //        content = json.loads(r.content.decode('utf-8'))
-        //        services = content.get('serviceInfoList')
-        //        server_id = None
-        //        for s in services:
-        //            if 'Model History' in s.get('name'):
-        //                server_id = s.get('id')
-        //        if server_id:
-        //            return server_id
-        //        else:
-        //            raise Exception(
-        //                "Could not detect default model history server instance. Is SKIL running?")
+        Map<String, Object> content = gson.fromJson(responseBody, Map.class);
+        List<Map<String, Object>> services = (List<Map<String, Object>>) content.get("serviceInfoList");
 
-
-        return "";
+        String serverId = "";
+        for (Map<String, Object> service: services) {
+            if (service.get("name").equals("Default Model History Server")) {
+                serverId = (String) service.get("id");
+                System.out.println(serverId);
+            }
+        }
+        if (serverId.isEmpty()) {
+            throw new IOException("Could not detect default model history server instance. Is SKIL running?");
+        } else {
+            return serverId;
+        }
     }
 
-    public void uploadModel(String modelName) throws ApiException {
+    public void uploadModel(File modelName) throws ApiException {
         logger.info(">>> Uploading model, this might take a while...");
-        List<FileUpload> upload = api.upload(new File(modelName)).getFileUploadResponseList();
-        uploads.add(upload.get(0));
-        uploadedModelNames.add(modelName);
+        List<FileUpload> upload = api.upload(modelName).getFileUploadResponseList();
+        FileUpload last = upload.get(upload.size() - 1);
+        uploads.add(last);
+        uploadedModelNames.add(modelName.getName());
     }
 
     public List<String> getUploadedModelNames() {
         return uploadedModelNames;
     }
 
-    public String getModelPath(String modelName) throws Exception {
+    public String getModelPath(File modelName) throws Exception {
         for (FileUpload upload: uploads) {
-            if (upload.getFileName() == modelName) {
+            if (upload.getFileName().equals(modelName.getName())) {
                 return "file://" + upload.getPath();
             }
         }
