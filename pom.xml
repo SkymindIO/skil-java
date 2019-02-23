@@ -29,9 +29,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git@//github.com/SkymindIO/SkilJava.git</connection>
-        <developerConnection>scm:git:ssh://github.com:SkymindIO/SkilJava.git</developerConnection>
-        <url>https://github.com/SkymindIO/SkilJava/tree/master</url>
+        <connection>scm:git:git@//github.com/SkymindIO/skil-java.git</connection>
+        <developerConnection>scm:git:ssh://github.com/SkymindIO/skil-java.git</developerConnection>
+        <url>https://github.com/SkymindIO/skil-java/tree/master</url>
     </scm>
 
     <repositories>
@@ -53,7 +53,6 @@
             <url>http://scala-tools.org/repo-releases</url>
         </repository>
     </repositories>
-
 
     <distributionManagement>
         <snapshotRepository>
@@ -196,7 +195,7 @@
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>${maven-gpg-plugin.version}</version>
                         <configuration>
-                            <!-- To not provide GPG passphrase manually -->
+                            <!-- Do not provide GPG passphrase manually -->
                             <passphrase>${gpg.passphrase}</passphrase>
                         </configuration>
                         <executions>
