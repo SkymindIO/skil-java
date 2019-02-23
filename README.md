@@ -1,5 +1,8 @@
 # SKIL: Deep learning model lifecycle management for humans
 
+[![Build Status](https://jenkins.ci.skymind.io/buildStatus/icon?job=skymind/skil-java/master)](https://jenkins.ci.skymind.io/blue/organizations/jenkins/skymind%2Fskil-java/activity)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/SkymindIO/skil-java/blob/master/LICENSE)
+
 ## WARNING: This project is still pre-release and needs more testing. 
 
 ## Java client for Skymind's intelligence layer (SKIL)
