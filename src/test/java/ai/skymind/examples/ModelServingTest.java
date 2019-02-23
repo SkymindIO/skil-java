@@ -15,7 +15,7 @@ import java.io.File;
 
 public class ModelServingTest {
 
-    @Test(timeout=60000)
+    @Test(timeout=900000)
     public void testSkilBasics() throws Exception {
 
         Skil skil = new Skil();
