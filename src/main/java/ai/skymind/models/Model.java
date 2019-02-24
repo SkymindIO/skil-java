@@ -116,9 +116,9 @@ public class Model {
                           List<String> inputNames, List<String> outputNames, boolean verbose)
             throws ApiException, IOException, InterruptedException {
 
-        List<String> uris = new ArrayList<String>();
+        List<String> uris = new ArrayList<>();
         uris.add(deployment.getName() + "/model/" + name + "/default");
-        uris.add(deployment.getName() + "/model/" + name + "/default");
+        uris.add(deployment.getName() + "/model/" + name + "/v1");
 
         if (this.service == null) {
             ImportModelRequest request = new ImportModelRequest().name(this.name).scale(scale).uri(uris)

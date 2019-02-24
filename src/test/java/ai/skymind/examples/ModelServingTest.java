@@ -27,10 +27,10 @@ public class ModelServingTest {
 
         Deployment deployment = new Deployment(skil, "myDeployment42");
         Service service = model.deploy(
-                deployment, true, 10, null, null, false
+                deployment, true, 1, null, null, false
         );
 
-//        INDArray[] data = new INDArray[] {Nd4j.create(100, 784)};
-//        service.predict(data, "default");
+        //INDArray[] data = new INDArray[] {Nd4j.create(100, 784)};
+        //service.predict(data, "default");
     }
 }
