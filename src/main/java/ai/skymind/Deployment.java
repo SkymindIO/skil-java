@@ -21,6 +21,7 @@ public class Deployment {
     private Skil skil;
     private String name;
     private String deploymentId;
+    private String deploymentSlug;
 
 
     /**
@@ -36,6 +37,7 @@ public class Deployment {
         CreateDeploymentRequest request = new CreateDeploymentRequest().name(name);
         DeploymentResponse response = skil.getApi().deploymentCreate(request);
         deploymentId = response.getId();
+        deploymentSlug = response.getDeploymentSlug();
     }
 
 
@@ -123,5 +125,9 @@ public class Deployment {
 
     public String getDeploymentId() {
         return deploymentId;
+    }
+
+    public String getDeploymentSlug() {
+        return deploymentSlug;
     }
 }
