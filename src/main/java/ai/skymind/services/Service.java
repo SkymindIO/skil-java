@@ -6,6 +6,7 @@ import ai.skymind.Skil;
 import ai.skymind.models.Model;
 import ai.skymind.skil.model.*;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.cpu.nativecpu.NDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
 import java.nio.FloatBuffer;
@@ -13,6 +14,7 @@ import java.nio.IntBuffer;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Service
@@ -102,13 +104,12 @@ public class Service {
      * @return SKIL INDArray used for predictions
      */
     private static ai.skymind.skil.model.INDArray toSkilArray(INDArray array) {
+        // Fixed boxing issue here:
+        List<Integer> intList = Arrays.stream(array.shape())
+                .mapToObj(i -> ((int) i)).collect(Collectors.toList());
 
-        long[] shape = array.shape();
-        int[] intArray = Arrays.stream(shape).mapToInt(i -> (int) i).toArray();
-        List intList = Arrays.asList(intArray);
-
-        float[] floatArr = array.data().asFloat();
-        List floatList = Arrays.asList(floatArr);
+        List<Float> floatList = Arrays.stream(array.data().asDouble())
+                .mapToObj(f -> ((float) f)).collect(Collectors.toList());
 
         return new ai.skymind.skil.model.INDArray()
                 .ordering(ai.skymind.skil.model.INDArray.OrderingEnum.C)
@@ -172,11 +173,11 @@ public class Service {
         );
 
         List<ai.skymind.skil.model.INDArray> outputs = response.getOutputs();
-        ArrayList<INDArray> out = new ArrayList<>();
-        for (ai.skymind.skil.model.INDArray arr: outputs) {
-            out.add(toNd4jArray(arr));
+        INDArray[] out = new INDArray[outputs.size()];
+        for (int i = 0; i < outputs.size(); i++) {
+            out[i] = (toNd4jArray(outputs.get(i)));
         }
-        return (INDArray[]) out.toArray();
+        return out;
     }
 
     /**
@@ -187,9 +188,21 @@ public class Service {
      * @return Model output, array of INDArrays
      * @throws ApiException SKIL API exception
      */
-    public INDArray[] predictSingle(INDArray[] data, String version) throws ApiException {
-        // FIXME
-        return data;
+    public INDArray predictSingle(INDArray data, String version) throws ApiException {
+
+        Prediction request = new Prediction()
+                .id(UUID.randomUUID().toString())
+                .needsPreProcessing(false)
+                .prediction(toSkilArray(data));
+
+        Prediction response = skil.getApi().predict(
+                request,
+                deployment.getName(),
+                version,
+                modelName
+        );
+
+        return toNd4jArray(response.getPrediction());
     }
 
     /**

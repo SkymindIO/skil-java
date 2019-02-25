@@ -117,8 +117,11 @@ public class Model {
             throws ApiException, IOException, InterruptedException {
 
         List<String> uris = new ArrayList<>();
-        uris.add(deployment.getName() + "/model/" + name + "/default");
-        uris.add(deployment.getName() + "/model/" + name + "/v1");
+        /* Always use deployment Slug here, otherwise the endpoints won't be
+         * created. (Mostly due to unmatched url safe strings for deployment name).
+         */
+        uris.add(deployment.getDeploymentSlug() + "/model/" + name + "/default");
+        uris.add(deployment.getDeploymentSlug() + "/model/" + name + "/v1");
 
         if (this.service == null) {
             ImportModelRequest request = new ImportModelRequest().name(this.name).scale(scale).uri(uris)
