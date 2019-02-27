@@ -14,6 +14,7 @@ import ai.skymind.skil.model.LoginRequest;
 import ai.skymind.skil.model.LoginResponse;
 import com.google.gson.Gson;
 import com.squareup.okhttp.*;
+import lombok.Data;
 
 /**
  * Central class for managing connections with your SKIL server instance.
@@ -116,11 +117,11 @@ public class Skil {
         return workspaceServerId;
     }
 
-    private String getHost() {
+    public String getHost() {
         return this.host;
     }
 
-    private int getPort() {
+    public int getPort() {
         return this.port;
     }
 

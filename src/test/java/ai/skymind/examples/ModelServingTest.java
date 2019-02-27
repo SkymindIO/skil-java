@@ -3,6 +3,7 @@ package ai.skymind.examples;
 import ai.skymind.*;
 import ai.skymind.models.Model;
 import ai.skymind.services.Service;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
@@ -16,6 +17,7 @@ import static junit.framework.TestCase.assertTrue;
 public class ModelServingTest {
 
     @Test(timeout=900000)
+    @Ignore
     public void testSkilBasics() throws Exception {
 
         Skil skil = new Skil();
