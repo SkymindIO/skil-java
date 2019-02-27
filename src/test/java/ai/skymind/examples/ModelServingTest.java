@@ -11,6 +11,8 @@ import org.nd4j.linalg.io.ClassPathResource;
 import java.io.File;
 import java.util.Arrays;
 
+import static junit.framework.TestCase.assertTrue;
+
 public class ModelServingTest {
 
     @Test(timeout=900000)
@@ -34,6 +36,8 @@ public class ModelServingTest {
         int retryCount = 2;
         int retries = 0;
 
+        boolean predictionPassed = false;
+
         do {
             retries++;
 
@@ -44,6 +48,7 @@ public class ModelServingTest {
                 // Multi Predict
                 System.out.println(Arrays.toString(service.predict(new INDArray[]{data}, "default")));
 
+                predictionPassed = true;
                 break;
             } catch (ApiException e) {
                 e.printStackTrace();
@@ -52,5 +57,7 @@ public class ModelServingTest {
                 Thread.sleep(10000); // Safe sleeping time for the model server to successfully wake up.
             }
         } while (retries < retryCount);
+
+        assertTrue("Model Server workflow passed", predictionPassed);
     }
 }
