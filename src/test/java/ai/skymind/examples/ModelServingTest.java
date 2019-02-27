@@ -32,14 +32,16 @@ public class ModelServingTest {
         /* Uploading with a scale <= 2, for the test to be applicable to SKIL CE. Later on we can
          * update this number as required.
          */
-        Service service = model.deploy(
-                deployment, true, 1, null, null, false
+        model.deploy(
+            deployment, true, 1, null, null, false,
+            // Bulletproof.. I Wish I Was
+            (service) -> {
+                INDArray data = Nd4j.rand(1, 784);
+                // Single Predict
+                System.out.println(service.predictSingle(data, "default"));
+                // Multi Predict
+                System.out.println(Arrays.toString(service.predict(new INDArray[] {data}, "v1")));
+            }
         );
-
-        INDArray data = Nd4j.rand(1, 784);
-        // Single Predict
-        System.out.println(service.predictSingle(data, "default"));
-        // Multi Predict
-        System.out.println(Arrays.toString(service.predict(new INDArray[] {data}, "default")));
     }
 }

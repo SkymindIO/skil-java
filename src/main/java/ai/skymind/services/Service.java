@@ -3,10 +3,10 @@ package ai.skymind.services;
 import ai.skymind.ApiException;
 import ai.skymind.Deployment;
 import ai.skymind.Skil;
+import ai.skymind.models.CallbackInterface;
 import ai.skymind.models.Model;
 import ai.skymind.skil.model.*;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.cpu.nativecpu.NDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
 import java.nio.FloatBuffer;
@@ -71,7 +71,7 @@ public class Service {
     /**
      * Starts the service with a callback
      */
-    public void start(Runnable callback) throws ApiException, InterruptedException {
+    public void start(ServiceCallbackInterface callback) throws ApiException, InterruptedException {
 
         if (deployedModel == null) {
             logger.info("Model entity is null. Did you 'deploy()' your SKIL Model instance?");
@@ -120,7 +120,7 @@ public class Service {
             } while (true);
 
             if(callback != null)
-                callback.run(); // Everything In Its Right Place
+                callback.run(this); // Everything In Its Right Place
         }
     }
 
@@ -138,7 +138,7 @@ public class Service {
      *
      * @throws ApiException SKIL API Exception
      */
-    public void stop(Runnable callback) throws ApiException {
+    public void stop(CallbackInterface callback) throws ApiException {
         logger.info("Stopping model server...");
         skil.getApi().modelStateChange(
                 this.deployment.getDeploymentId(),
