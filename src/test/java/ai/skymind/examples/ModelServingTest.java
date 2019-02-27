@@ -1,9 +1,6 @@
 package ai.skymind.examples;
 
-import ai.skymind.Deployment;
-import ai.skymind.Experiment;
-import ai.skymind.Skil;
-import ai.skymind.WorkSpace;
+import ai.skymind.*;
 import ai.skymind.models.Model;
 import ai.skymind.services.Service;
 import org.junit.Test;
@@ -34,10 +31,26 @@ public class ModelServingTest {
                 deployment, true, 1, null, null, false
         );
 
-        INDArray data = Nd4j.rand(1, 784);
-        // Single Predict
-        System.out.println(service.predictSingle(data, "default"));
-        // Multi Predict
-        System.out.println(Arrays.toString(service.predict(new INDArray[] {data}, "default")));
+        int retryCount = 2;
+        int retries = 0;
+
+        do {
+            retries++;
+
+            try {
+                INDArray data = Nd4j.rand(1, 784);
+                // Single Predict
+                System.out.println(service.predictSingle(data, "default"));
+                // Multi Predict
+                System.out.println(Arrays.toString(service.predict(new INDArray[]{data}, "default")));
+
+                break;
+            } catch (ApiException e) {
+                e.printStackTrace();
+
+                System.out.println("Couldn't try predictions with the model server, retrying: " + retries);
+                Thread.sleep(10000); // Safe sleeping time for the model server to successfully wake up.
+            }
+        } while (retries < retryCount);
     }
 }
