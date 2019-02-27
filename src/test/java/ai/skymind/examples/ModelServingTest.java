@@ -58,6 +58,7 @@ public class ModelServingTest {
             }
         } while (retries < retryCount);
 
-        assertTrue("Model Server workflow passed", predictionPassed);
+        assertTrue("Model Server workflow failed! Couldn't get predictions with the model server",
+                predictionPassed);
     }
 }
