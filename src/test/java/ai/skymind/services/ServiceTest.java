@@ -17,7 +17,7 @@ import static junit.framework.TestCase.assertTrue;
 
 public class ServiceTest {
 
-    @Test
+    @Test(timeout=900000)
     public void serviceTest() throws Exception {
         Skil skil = new Skil();
         WorkSpace workSpace = new WorkSpace(skil);
