@@ -67,6 +67,7 @@ public class Deployment {
     public Map<String, Object> getConfig() {
         HashMap<String, Object> config = new HashMap<>();
         config.put("deploymentId", deploymentId);
+        config.put("name", name);
         return config;
     }
 
@@ -74,9 +75,8 @@ public class Deployment {
      * Save the deployment configuration as JSON file
      *
      * @param fileName name of the file in which to store the deployment config
-     * @throws IOException IO exception
      */
-    public void save(String fileName) throws IOException {
+    public void save(String fileName) {
         Map config = getConfig();
         Gson gson = new Gson();
         String json = gson.toJson(config);
@@ -105,6 +105,15 @@ public class Deployment {
         String name = (String) config.get("name");
         String deploymentId = (String) config.get("deploymentId");
         return new Deployment(skil, name, deploymentId);
+    }
+
+    /**
+     * Delete this deployment.
+     *
+     * @throws ApiException SKIL API exception.
+     */
+    public void delete() throws ApiException {
+        this.skil.getApi().deploymentDelete(this.getDeploymentId());
     }
 
     /**

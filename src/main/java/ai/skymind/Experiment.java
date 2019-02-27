@@ -60,7 +60,8 @@ public class Experiment {
     }
 
     private Experiment(WorkSpace workSpace, String experimentId) throws ApiException {
-        ExperimentEntity experimentEntity = workSpace.getSkil().getApi().getExperiment(
+        this.skil = workSpace.getSkil();
+        ExperimentEntity experimentEntity = skil.getApi().getExperiment(
                 skil.getWorkspaceServerId(),
                 experimentId
         );

@@ -6,6 +6,7 @@ import ai.skymind.Skil;
 import ai.skymind.WorkSpace;
 import ai.skymind.models.Model;
 import ai.skymind.services.Service;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 public class ModelServingTest {
 
     @Test(timeout=900000)
+    @Ignore
     public void testSkilBasics() throws Exception {
 
         Skil skil = new Skil();
