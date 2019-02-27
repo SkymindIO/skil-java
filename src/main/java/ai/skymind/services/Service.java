@@ -51,6 +51,15 @@ public class Service {
         this.deployedModel = deployedModel;
     }
 
+    /**
+     * Delete this service.
+     *
+     * @throws ApiException SKIL API exception
+     */
+    public void delete() throws ApiException {
+        this.stop();
+        skil.getApi().deleteModel(this.deployment.getDeploymentId(), this.model.getId());
+    }
 
     /**
      * Starts the service.

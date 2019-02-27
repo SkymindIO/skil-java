@@ -6,11 +6,11 @@ import ai.skymind.skil.model.ImportModelRequest;
 import ai.skymind.skil.model.ModelEntity;
 import ai.skymind.skil.model.ModelInstanceEntity;
 import ai.skymind.skil.model.EvaluationResultsEntity;
+import com.google.gson.Gson;
 import lombok.Data;
 
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -104,22 +104,97 @@ public class Model {
         }
     }
 
+    /**
+     * Get the model config as Map
+     *
+     * @return model config
+     */
+    public Map<String, Object> getConfig() {
+
+        HashMap<String, Object> config = new HashMap<>();
+        config.put("modelId", id);
+        config.put("modelName", name);
+        config.put("experimentId", experiment.getId());
+        config.put("workspaceId", workSpace.getId());
+        return config;
+    }
+
+    /**
+     * Save the model configuration as JSON file
+     *
+     * @param fileName name of the file in which to store the model config
+     */
+    public void save(String fileName) {
+        Map config = getConfig();
+        Gson gson = new Gson();
+        String json = gson.toJson(config);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
+            bw.write(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Load a model from file
+     *
+     * @param skil Skil instance
+     * @param fileName file name for file with model config JSON
+     * @return Model instance
+     *
+     * @throws FileNotFoundException File not found
+     * @throws ApiException SKIL API exception
+     */
+    public static Model load(Skil skil, String fileName) throws Exception {
+        FileInputStream fis = new FileInputStream(new File(fileName));
+        final Gson gson = new Gson();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+        HashMap<String, Object> config = gson.fromJson(reader, HashMap.class);
+        String workSpaceId = (String) config.get("workspaceId");
+        String experimentId = (String) config.get("experimentId");
+
+
+        WorkSpace workSpace = WorkSpace.getWorkSpaceById(skil, workSpaceId);
+
+        Experiment exp = Experiment.getExperimentById(workSpace, experimentId);
+        String modelId = (String) config.get("modelId");
+
+        Model model = getModelById(exp, modelId);
+        model.setName((String) config.get("modelName"));
+        return model;
+    }
+
     public String getModelPath() {
         return modelPath;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {
         return name;
     }
 
+    /**
+     * Deploy a model as a service.
+     *
+     * @param deployment Deployment instance
+     * @param startServer boolean, whether to start the server
+     * @param scale number of servers to deploy this model to
+     * @param inputNames Space-separated input names to the model are required for multi-input models
+     * @param outputNames Space-separated output names to the model are required for multi-output models
+     * @param verbose boolean, turn on verbose logging
+     * @return SKIL Service instance
+     * @throws ApiException SKIL API exception
+     * @throws IOException I/O exception
+     * @throws InterruptedException Interrupted exception
+     */
     public Service deploy(Deployment deployment, boolean startServer, int scale,
                           List<String> inputNames, List<String> outputNames, boolean verbose)
             throws ApiException, IOException, InterruptedException {
 
         List<String> uris = new ArrayList<>();
-        /* Always use deployment Slug here, otherwise the endpoints won't be
-         * created. (Mostly due to unmatched url safe strings for deployment name).
-         */
         uris.add(deployment.getDeploymentSlug() + "/model/" + name + "/default");
         uris.add(deployment.getDeploymentSlug() + "/model/" + name + "/v1");
 
@@ -127,8 +202,6 @@ public class Model {
             ImportModelRequest request = new ImportModelRequest().name(this.name).scale(scale).uri(uris)
                     .modelType("model").fileLocation(this.modelPath).inputNames(inputNames).outputNames(outputNames);
 
-
-            //TODO from Python: self.deployment = deployment.response ???
             this.deployment = deployment;
 
             List<ModelEntity> models = skil.getApi().models(this.deployment.getDeploymentId());
@@ -156,29 +229,51 @@ public class Model {
         return this.service;
     }
 
+    /**
+     * Register an evaluation data point for this model, e.g. add model accuracy.
+     *
+     * @param accuracy model accuracy
+     * @param evalId evaluation ID
+     * @param name name of the evaluation
+     * @param version evaluation version
+     * @throws Exception Exception
+     */
     public void addEvaluation(double accuracy, String evalId, String name, Integer version) throws Exception {
         // TODO defaults for id, name, version
         Long created = (new Date().getTime()/1000);
 
-        EvaluationResultsEntity evaluationResultsEntity = new EvaluationResultsEntity().evaluation("")
-                .created(created).evalName(name).evalVersion(version).evalId(evalId)
-                .modelInstanceId(this.id).accuracy(accuracy);
+        EvaluationResultsEntity evaluationResultsEntity = new EvaluationResultsEntity()
+                .evaluation("")
+                .created(created)
+                .evalName(name)
+                .evalVersion(version)
+                .evalId(evalId)
+                .modelInstanceId(this.id)
+                .accuracy(accuracy);
 
         skil.getApi().addEvaluationResult(skil.getDefaultServerId(), evaluationResultsEntity);
         this.evaluations.put(evalId, evaluationResultsEntity);
 
     }
 
-    public void undeploy() throws ApiException {
-        skil.getApi().deleteModel(this.deployment.getDeploymentId(), this.id);
-    }
-
-
+    /**
+     * Delete this model.
+     *
+     * @throws ApiException SKIL API exception
+     */
     public void delete() throws ApiException {
         skil.getApi().deleteModelInstance(this.skil.getWorkspaceServerId(), this.id);
     }
 
 
+    /**
+     * Get a SKIL model by ID
+     *
+     * @param experiment SKIL experiment instance
+     * @param modelId valid SKIL Model ID
+     * @return Model instance
+     * @throws Exception Exception
+     */
     public static Model getModelById(Experiment experiment, String modelId) throws Exception {
         return new Model(modelId, experiment, "");
     }

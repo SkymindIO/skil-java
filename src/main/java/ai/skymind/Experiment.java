@@ -79,7 +79,7 @@ public class Experiment {
     /**
      * Get the experiment config as Map
      *
-     * @return deployment config
+     * @return experiment config
      */
     public Map<String, Object> getConfig() {
 
@@ -121,8 +121,8 @@ public class Experiment {
      * Load an experiment from file
      *
      * @param skil Skil instance
-     * @param fileName file name for file with deployment config JSON
-     * @return Deployment instance
+     * @param fileName file name for file with experiment config JSON
+     * @return Experiment instance
      *
      * @throws FileNotFoundException File not found
      * @throws ApiException SKIL API exception
