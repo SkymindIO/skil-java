@@ -62,9 +62,16 @@ public class Service {
     }
 
     /**
-     * Starts the service.
+     * Starts the service with a null callback.
      */
     public void start() throws ApiException, InterruptedException {
+        start(null); // How To Disappear Completely
+    }
+
+    /**
+     * Starts the service with a callback
+     */
+    public void start(Runnable callback) throws ApiException, InterruptedException {
 
         if (deployedModel == null) {
             logger.info("Model entity is null. Did you 'deploy()' your SKIL Model instance?");
@@ -75,36 +82,80 @@ public class Service {
                     new SetState().state(SetState.StateEnum.START)
             );
             logger.info("Starting to serve model...");
-            while (true) {
-                TimeUnit.SECONDS.sleep(5);
-                ModelEntity.StateEnum state = skil.getApi().modelStateChange(
-                        this.deployment.getDeploymentId(),
-                        String.valueOf(deployedModel.getId()),
-                        new SetState().state(SetState.StateEnum.START)
-                ).getState();
 
-                if (state.equals(ModelEntity.StateEnum.STARTED)) {
-                    TimeUnit.SECONDS.sleep(15);
-                    logger.info("Model server started successfully");
-                    break;
-                } else {
-                    logger.info("Waiting for deployment");
+            // These Are My Twisted Words
+            // TODO: Update this when adding more endpoint versions
+            // You Never Wash Up After Yourself
+            String[] versions = new String[]{"default", "v1"};
+            boolean modelStarted = false;
+            do {
+                TimeUnit.SECONDS.sleep(5);
+
+                try {
+                    if (!modelStarted) {
+                        ModelEntity modelForState =
+                                deployment.getModelById(String.valueOf(this.deployedModel.getId()));
+
+                        if (!modelForState.getModelState().name().equals(ModelEntity.ModelStateEnum.STARTED.name())) {
+                            modelStarted = true;
+                        }
+                    } else {
+                        // The code below runs when the model has started.
+                        // Sending a test request to get model log file path.
+                        // This is to double check if the model is serving requests.
+                        for(String version: versions) {
+                            skil.getApi().logfilepath(this.deployment.getDeploymentSlug(),
+                                    version,
+                                    this.model.getName());
+                        } // How Can You Be Sure?
+
+                        logger.info("Model Server started successfully!");
+                        break;
+                    }
+                } catch (ApiException e) {
+                    e.printStackTrace();
                 }
-            }
+
+                logger.info("Waiting for deployment");
+            } while (true);
+
+            if(callback != null)
+                callback.run(); // Everything In Its Right Place
         }
     }
 
     /**
-     * Stops the service.
+     * Stops the service with a null callback
      *
      * @throws ApiException SKIL API Exception
      */
     public void stop() throws ApiException {
+        stop(null); // How To Disappear Completely
+    }
+
+    /**
+     * Stops the service with a callback
+     *
+     * @throws ApiException SKIL API Exception
+     */
+    public void stop(Runnable callback) throws ApiException {
+        logger.info("Stopping model server...");
         skil.getApi().modelStateChange(
                 this.deployment.getDeploymentId(),
                 String.valueOf(deployedModel.getId()),
                 new SetState().state(SetState.StateEnum.STOP)
         );
+
+        // Blow Out
+        do {
+            ModelEntity modelForState =
+                    deployment.getModelById(String.valueOf(this.deployedModel.getId()));
+
+            if (!modelForState.getModelState().name().equals(ModelEntity.ModelStateEnum.STOPPED.name())) break;
+        } while (true);
+
+        if(callback != null)
+            callback.run(); // No Surprises
     }
 
     /**

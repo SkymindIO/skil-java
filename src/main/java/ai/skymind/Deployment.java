@@ -2,6 +2,7 @@ package ai.skymind;
 
 import ai.skymind.skil.model.CreateDeploymentRequest;
 import ai.skymind.skil.model.DeploymentResponse;
+import ai.skymind.skil.model.ModelEntity;
 import com.google.gson.Gson;
 
 import java.io.*;
@@ -126,6 +127,10 @@ public class Deployment {
      */
     public static Deployment getDeploymentById(Skil skil, String deploymentId) throws ApiException {
         return new Deployment(skil, "", deploymentId);
+    }
+
+    public ModelEntity getModelById(String modelId) throws ApiException {
+        return skil.getApi().getModelDetails(this.getDeploymentId(), modelId);
     }
 
     public String getName() {
