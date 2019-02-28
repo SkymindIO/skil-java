@@ -1,8 +1,6 @@
 package ai.skymind.services;
 
-import ai.skymind.ApiException;
-import ai.skymind.Deployment;
-import ai.skymind.Skil;
+import ai.skymind.*;
 import ai.skymind.models.CallbackInterface;
 import ai.skymind.models.Model;
 import ai.skymind.skil.model.*;
@@ -10,8 +8,7 @@ import com.google.gson.Gson;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.*;
@@ -180,7 +177,7 @@ public class Service {
                 try {
                     if (!modelStarted) {
                         ModelEntity modelForState =
-                                deployment.getModelById(String.valueOf(this.deployedModel.getId()));
+                                deployment.getModelById(String.valueOf(this.modelEntity.getId()));
 
                         if (ModelEntity.ModelStateEnum.STARTED.name().equals(modelForState.getState().name())) {
                             modelStarted = true;
@@ -236,7 +233,7 @@ public class Service {
         // Blow Out
         do {
             ModelEntity modelForState =
-                    deployment.getModelById(String.valueOf(this.deployedModel.getId()));
+                    deployment.getModelById(String.valueOf(this.modelEntity.getId()));
 
             if (ModelEntity.ModelStateEnum.STOPPED.name().equals(modelForState.getState().name())) break;
 
