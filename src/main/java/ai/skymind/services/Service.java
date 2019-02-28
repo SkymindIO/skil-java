@@ -1,6 +1,7 @@
 package ai.skymind.services;
 
 import ai.skymind.*;
+import ai.skymind.models.CallbackInterface;
 import ai.skymind.models.Model;
 import ai.skymind.skil.model.*;
 import com.google.gson.Gson;
@@ -55,9 +56,10 @@ public class Service {
      *
      * @throws ApiException SKIL API exception
      */
-    public void delete() throws ApiException {
+    public void delete() throws ApiException, InterruptedException {
         this.stop();
-        skil.getApi().deleteModel(this.deployment.getDeploymentId(), this.model.getId());
+        skil.getApi().deleteModel(this.deployment.getDeploymentId(),
+                String.valueOf(this.model.getModelDeployment().getId()));
     }
 
     /**
@@ -145,9 +147,16 @@ public class Service {
 
 
     /**
-     * Starts the service.
+     * Starts the service with a null callback.
      */
     public void start() throws ApiException, InterruptedException {
+        start(null); // How To Disappear Completely
+    }
+
+    /**
+     * Starts the service with a callback
+     */
+    public void start(ServiceCallbackInterface callback) throws ApiException, InterruptedException {
 
         if (modelEntity == null) {
             logger.info("Model entity is null. Did you 'deploy()' your SKIL Model instance?");
@@ -158,36 +167,83 @@ public class Service {
                     new SetState().state(SetState.StateEnum.START)
             );
             logger.info("Starting to serve model...");
-            while (true) {
-                TimeUnit.SECONDS.sleep(5);
-                ModelEntity.StateEnum state = skil.getApi().modelStateChange(
-                        this.deployment.getDeploymentId(),
-                        String.valueOf(modelEntity.getId()),
-                        new SetState().state(SetState.StateEnum.START)
-                ).getState();
 
-                if (state.equals(ModelEntity.StateEnum.STARTED)) {
-                    TimeUnit.SECONDS.sleep(15);
-                    logger.info("Model server started successfully");
-                    break;
-                } else {
-                    logger.info("Waiting for deployment");
+            // These Are My Twisted Words
+            // TODO: Make the line below more general i.e. allow users to specify endpoints themselves later on...
+            String[] versions = new String[]{"default", "v1"};
+            boolean modelStarted = false;
+            do {
+                TimeUnit.SECONDS.sleep(5);
+
+                try {
+                    if (!modelStarted) {
+                        ModelEntity modelForState =
+                                deployment.getModelById(String.valueOf(this.modelEntity.getId()));
+
+                        if (ModelEntity.ModelStateEnum.STARTED.name().equals(modelForState.getState().name())) {
+                            modelStarted = true;
+                            logger.info("Model serving. Verifying integrity of endpoints...");
+                        }
+                    } else {
+                        // The code below runs when the model has started.
+                        // Sending a test request to get model log file path.
+                        // This is to double check if the model is serving requests.
+                        for(String version: versions) {
+                            skil.getApi().logfilepath(this.deployment.getDeploymentSlug(),
+                                    version,
+                                    this.model.getName());
+                        } // How Can You Be Sure?
+
+                        logger.info("Model server is active now!");
+                        break;
+                    }
+                } catch (ApiException e) {
+                    logger.info("Unsuccessful access endpoint attempt, retrying...");
                 }
-            }
+
+                logger.info("Waiting for deployment");
+            } while (true);
+
+            if(callback != null)
+                callback.run(this); // Everything In Its Right Place
         }
     }
 
     /**
-     * Stops the service.
+     * Stops the service with a null callback
      *
      * @throws ApiException SKIL API Exception
      */
-    public void stop() throws ApiException {
+    public void stop() throws ApiException, InterruptedException {
+        stop(null); // How To Disappear Completely
+    }
+
+    /**
+     * Stops the service with a callback
+     *
+     * @throws ApiException SKIL API Exception
+     */
+    public void stop(CallbackInterface callback) throws ApiException, InterruptedException {
+        logger.info("Stopping model server...");
         skil.getApi().modelStateChange(
                 this.deployment.getDeploymentId(),
                 String.valueOf(modelEntity.getId()),
                 new SetState().state(SetState.StateEnum.STOP)
         );
+
+        // Blow Out
+        do {
+            ModelEntity modelForState =
+                    deployment.getModelById(String.valueOf(this.modelEntity.getId()));
+
+            if (ModelEntity.ModelStateEnum.STOPPED.name().equals(modelForState.getState().name())) break;
+
+            Thread.sleep(5000);
+            logger.info("Waiting for model server to stop...");
+        } while (true);
+
+        if(callback != null)
+            callback.run(); // No Surprises
     }
 
     /**

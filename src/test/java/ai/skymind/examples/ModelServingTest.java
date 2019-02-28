@@ -2,7 +2,6 @@ package ai.skymind.examples;
 
 import ai.skymind.*;
 import ai.skymind.models.Model;
-import ai.skymind.services.Service;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -12,12 +11,9 @@ import org.nd4j.linalg.io.ClassPathResource;
 import java.io.File;
 import java.util.Arrays;
 
-import static junit.framework.TestCase.assertTrue;
-
 public class ModelServingTest {
 
     @Test(timeout=900000)
-    @Ignore
     public void testSkilBasics() throws Exception {
 
         Skil skil = new Skil();
@@ -31,36 +27,24 @@ public class ModelServingTest {
         /* Uploading with a scale <= 2, for the test to be applicable to SKIL CE. Later on we can
          * update this number as required.
          */
-        Service service = model.deploy(
-                deployment, true, 1, null, null, false
-        );
+        model.deploy(
+            deployment, true, 1, null, null, false,
 
-        int retryCount = 2;
-        int retries = 0;
-
-        boolean predictionPassed = false;
-
-        do {
-            retries++;
-
-            try {
+            // Bulletproof.. I Wish I Was
+            (service) -> {
                 INDArray data = Nd4j.rand(1, 784);
                 // Single Predict
                 System.out.println(service.predictSingle(data, "default"));
                 // Multi Predict
-                System.out.println(Arrays.toString(service.predict(new INDArray[]{data}, "default")));
+                System.out.println(Arrays.toString(service.predict(new INDArray[] {data}, "v1")));
 
-                predictionPassed = true;
-                break;
-            } catch (ApiException e) {
-                e.printStackTrace();
-
-                System.out.println("Couldn't try predictions with the model server, retrying: " + retries);
-                Thread.sleep(10000); // Safe sleeping time for the model server to successfully wake up.
+                // Cleaning up
+                service.stop(() -> {
+                    service.delete();
+                    deployment.delete();
+                    workSpace.delete();
+                }); // You Never Wash Up After Yourself
             }
-        } while (retries < retryCount);
-
-        assertTrue("Model Server workflow failed! Couldn't get predictions with the model server",
-                predictionPassed);
+        );
     }
 }

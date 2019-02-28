@@ -136,7 +136,7 @@ public class Transform extends Model {
 
     public Service deploy(Deployment deployment, boolean startServer, int scale,
                        List<String> inputNames, List<String> outputNames, boolean verbose)
-            throws ApiException, IOException, InterruptedException {
+            throws ApiException, InterruptedException {
 
         List<String> uris = new ArrayList<String>();
         // TODO: those endpoints should be called "transform"
@@ -175,8 +175,6 @@ public class Transform extends Model {
                 this.service = new TransformArrayService(skil, this, this.deployment, this.modelDeployment);
             } else if (this.transformType.getType().equals("image")) {
                 this.service = new TransformImageService(skil, this, this.deployment, this.modelDeployment);
-            } else {
-                throw new IOException("Unsupported transform type: " + this.transformType);
             }
 
             if (startServer) {

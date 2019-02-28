@@ -25,8 +25,9 @@ public class ModelTest {
         File modelFile = new ClassPathResource("keras_mnist.h5").getFile();
         Model model = new Model(modelFile, experiment);
 
-        // TOOD delete throws 500
-        // model.delete();
+        // model.delete(); // TODO: Adjust this endpoint in skil-clients
+        // experiment.delete(); // TODO: Adjust this endpoint in skil-clients
+        workSpace.delete();
     }
 
     @Test
@@ -57,6 +58,8 @@ public class ModelTest {
         Map recovConfig = recov.getConfig();
         assertTrue(Maps.difference(recovConfig, config).areEqual());
 
-//        model.delete();
+        // model.delete(); // TODO: Adjust this endpoint in skil-clients
+        // experiment.delete(); // TODO: Adjust this endpoint in skil-clients
+        workSpace.delete();
     }
 }

@@ -22,6 +22,7 @@ public class DeploymentTest {
         File temp = File.createTempFile("deployment", ".json");
         deployment.save(temp.getAbsolutePath());
 
+        // @max this might be because deployment was deleted on line # 16
         // TODO: api.deploymentGet response is null for some reason. Investigate.
 //        Deployment recov = Deployment.load(skil, temp.getAbsolutePath());
 //        assert recov.getName().equals("Kid A");

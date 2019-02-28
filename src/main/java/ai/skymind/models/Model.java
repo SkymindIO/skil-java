@@ -2,6 +2,7 @@ package ai.skymind.models;
 
 import ai.skymind.*;
 import ai.skymind.services.Service;
+import ai.skymind.services.ServiceCallbackInterface;
 import ai.skymind.skil.model.ImportModelRequest;
 import ai.skymind.skil.model.ModelEntity;
 import ai.skymind.skil.model.ModelInstanceEntity;
@@ -187,12 +188,32 @@ public class Model {
      * @param verbose boolean, turn on verbose logging
      * @return SKIL Service instance
      * @throws ApiException SKIL API exception
-     * @throws IOException I/O exception
      * @throws InterruptedException Interrupted exception
      */
     public Service deploy(Deployment deployment, boolean startServer, int scale,
                           List<String> inputNames, List<String> outputNames, boolean verbose)
-            throws ApiException, IOException, InterruptedException {
+            throws ApiException, InterruptedException {
+        return deploy(deployment, startServer, scale, inputNames, outputNames, verbose, null);
+    }
+
+    /**
+     * Deploy a model as a service.
+     *
+     * @param deployment Deployment instance
+     * @param startServer boolean, whether to start the server
+     * @param scale number of servers to deploy this model to
+     * @param inputNames Space-separated input names to the model are required for multi-input models
+     * @param outputNames Space-separated output names to the model are required for multi-output models
+     * @param verbose boolean, turn on verbose logging
+     * @param callback A callback function for when a model is started.
+     * @return SKIL Service instance
+     * @throws ApiException SKIL API exception
+     * @throws InterruptedException Interrupted exception
+     */
+    public Service deploy(Deployment deployment, boolean startServer, int scale,
+                          List<String> inputNames, List<String> outputNames, boolean verbose,
+                          ServiceCallbackInterface callback)
+            throws ApiException, InterruptedException {
 
         List<String> uris = new ArrayList<>();
         uris.add(deployment.getDeploymentSlug() + "/model/" + name + "/default");
@@ -223,7 +244,7 @@ public class Model {
             this.service = new Service(this.skil, this, this.deployment, this.modelDeployment);
 
             if (startServer) {
-                this.service.start();
+                this.service.start(callback);
             }
         }
         return this.service;
