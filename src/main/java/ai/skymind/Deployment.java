@@ -1,13 +1,16 @@
 package ai.skymind;
 
+import ai.skymind.services.Service;
 import ai.skymind.skil.model.CreateDeploymentRequest;
 import ai.skymind.skil.model.DeploymentResponse;
 import ai.skymind.skil.model.ModelEntity;
 import com.google.gson.Gson;
 
 import java.io.*;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Deployment
@@ -24,6 +27,7 @@ public class Deployment {
     private String deploymentId;
     private String deploymentSlug;
 
+    private Logger logger = Logger.getLogger(Service.class.getName());
 
     /**
      * Create a new deployment from a Skil instance and a name.
@@ -117,6 +121,28 @@ public class Deployment {
         this.skil.getApi().deploymentDelete(this.getDeploymentId());
     }
 
+    /*
+     * Deletes a model given its ID
+     */
+    public void deleteModel(String modelId) {
+        int retries = 5;
+        for (int retry = 1; retry <= retries; retry++) {
+            try {
+                Thread.sleep(1000);
+                this.skil.getApi().deleteModel(this.deploymentId, modelId);
+                logger.info("Model Deleted successfully!");
+                return;
+            } catch (ApiException | InterruptedException e) {
+                String log = MessageFormat.format("Unsuccessful delete attempt, retrying... ({0})", retry);
+                logger.info(log);
+            }
+        }
+
+        String log = MessageFormat.format("Cannot delete model # {0} in deployment # {1}",
+                this.deploymentId, modelId);
+        logger.info(log);
+    }
+
     /**
      * Get a SKIL deployment by ID.
      *
@@ -130,7 +156,7 @@ public class Deployment {
     }
 
     public ModelEntity getModelById(String modelId) throws ApiException {
-        return skil.getApi().getModelDetails(this.getDeploymentId(), modelId);
+        return this.skil.getApi().getModelDetails(this.getDeploymentId(), modelId);
     }
 
     public String getName() {

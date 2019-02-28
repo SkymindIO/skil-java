@@ -1,11 +1,7 @@
 package ai.skymind.examples;
 
-import ai.skymind.Deployment;
-import ai.skymind.Experiment;
-import ai.skymind.Skil;
-import ai.skymind.WorkSpace;
+import ai.skymind.*;
 import ai.skymind.models.Model;
-import ai.skymind.services.Service;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -34,6 +30,7 @@ public class ModelServingTest {
          */
         model.deploy(
             deployment, true, 1, null, null, false,
+
             // Bulletproof.. I Wish I Was
             (service) -> {
                 INDArray data = Nd4j.rand(1, 784);
@@ -41,6 +38,17 @@ public class ModelServingTest {
                 System.out.println(service.predictSingle(data, "default"));
                 // Multi Predict
                 System.out.println(Arrays.toString(service.predict(new INDArray[] {data}, "v1")));
+
+                // Cleaning up
+                service.stop(() -> {
+                    // The IDs of experiment model instance and deployed model instances are
+                    // managed separately. Therefore, we have to get the deployed model's ID.
+                    String modelId = String.valueOf(model.getModelDeployment().getId());
+
+                    deployment.deleteModel(modelId);
+                    deployment.delete();
+                    workSpace.delete();
+                }); // You Never Wash Up After Yourself
             }
         );
     }

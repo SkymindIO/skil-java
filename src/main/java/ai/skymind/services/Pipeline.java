@@ -57,7 +57,7 @@ public class Pipeline extends Service {
     }
 
     @Override
-    public void stop() throws ApiException {
+    public void stop() throws ApiException, InterruptedException {
         transformService.stop();
         modelService.stop();
     }

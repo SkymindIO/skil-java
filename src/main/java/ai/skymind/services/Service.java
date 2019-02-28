@@ -56,7 +56,7 @@ public class Service {
      *
      * @throws ApiException SKIL API exception
      */
-    public void delete() throws ApiException {
+    public void delete() throws ApiException, InterruptedException {
         this.stop();
         skil.getApi().deleteModel(this.deployment.getDeploymentId(), this.model.getId());
     }
@@ -84,8 +84,7 @@ public class Service {
             logger.info("Starting to serve model...");
 
             // These Are My Twisted Words
-            // TODO: Update this when adding more endpoint versions
-            // You Never Wash Up After Yourself
+            // TODO: Make the line below more general i.e. allow users to specify endpoints themselves later on...
             String[] versions = new String[]{"default", "v1"};
             boolean modelStarted = false;
             do {
@@ -96,8 +95,9 @@ public class Service {
                         ModelEntity modelForState =
                                 deployment.getModelById(String.valueOf(this.deployedModel.getId()));
 
-                        if (!modelForState.getModelState().name().equals(ModelEntity.ModelStateEnum.STARTED.name())) {
+                        if (ModelEntity.ModelStateEnum.STARTED.name().equals(modelForState.getState().name())) {
                             modelStarted = true;
+                            logger.info("Model serving. Verifying integrity of endpoints...");
                         }
                     } else {
                         // The code below runs when the model has started.
@@ -109,11 +109,11 @@ public class Service {
                                     this.model.getName());
                         } // How Can You Be Sure?
 
-                        logger.info("Model Server started successfully!");
+                        logger.info("Model server is active now!");
                         break;
                     }
                 } catch (ApiException e) {
-                    e.printStackTrace();
+                    logger.info("Unsuccessful access endpoint attempt, retrying...");
                 }
 
                 logger.info("Waiting for deployment");
@@ -129,7 +129,7 @@ public class Service {
      *
      * @throws ApiException SKIL API Exception
      */
-    public void stop() throws ApiException {
+    public void stop() throws ApiException, InterruptedException {
         stop(null); // How To Disappear Completely
     }
 
@@ -138,7 +138,7 @@ public class Service {
      *
      * @throws ApiException SKIL API Exception
      */
-    public void stop(CallbackInterface callback) throws ApiException {
+    public void stop(CallbackInterface callback) throws ApiException, InterruptedException {
         logger.info("Stopping model server...");
         skil.getApi().modelStateChange(
                 this.deployment.getDeploymentId(),
@@ -151,7 +151,10 @@ public class Service {
             ModelEntity modelForState =
                     deployment.getModelById(String.valueOf(this.deployedModel.getId()));
 
-            if (!modelForState.getModelState().name().equals(ModelEntity.ModelStateEnum.STOPPED.name())) break;
+            if (ModelEntity.ModelStateEnum.STOPPED.name().equals(modelForState.getState().name())) break;
+
+            Thread.sleep(5000);
+            logger.info("Waiting for model server to stop...");
         } while (true);
 
         if(callback != null)
