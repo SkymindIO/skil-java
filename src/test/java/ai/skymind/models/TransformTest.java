@@ -25,8 +25,11 @@ public class TransformTest {
         TransformType type = TransformType.CSV;
         Model transform = new Transform(modelFile, type, experiment);
 
-        // TOOD delete throws 500
-        // model.delete();
+        // @max for you |vvvvvvv|
+        // TODO: I'm not sure if workspaces can handle transforms. They are designed to compliment DL models
+        // transform.delete(); // TODO: Adjust this endpoint in skil-clients
+        // experiment.delete(); // TODO: Adjust this endpoint in skil-clients
+        workSpace.delete();
     }
 
     @Test
@@ -61,6 +64,10 @@ public class TransformTest {
         Map recovConfig = recov.getConfig();
         assertTrue(Maps.difference(recovConfig, config).areEqual());
 
-//        model.delete();
+        // @max for you |vvvvvvv|
+        // TODO: I'm not sure if workspaces can handle transforms. They are designed to compliment DL models
+        // transform.delete(); // TODO: Adjust this endpoint in skil-clients
+        // experiment.delete(); // TODO: Adjust this endpoint in skil-clients
+        workSpace.delete();
     }
 }

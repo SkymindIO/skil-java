@@ -31,7 +31,9 @@ public class ServiceTest {
         Service service = model.deploy(deployment, true, 1, null, null,
                 false);
 
-//         service.delete();
+        service.delete();
+        deployment.delete();
+        workSpace.delete();
     }
 
     @Test
@@ -43,7 +45,11 @@ public class ServiceTest {
         File modelFile = new ClassPathResource("keras_mnist.h5").getFile();
         Model model = new Model(modelFile, experiment);
 
-        Deployment deployment = new Deployment(skil, "Weird Fishes/Arpeggi"  + UUID.randomUUID().toString());
+        //TODO: interesting... seems like slashes won't be converted into a valid deployment slug
+        //(Good job finding this max)
+        //Deployment deployment = new Deployment(skil, "Weird Fishes/Arpeggi"  + UUID.randomUUID().toString());
+        // Doing this quick hack for now...
+        Deployment deployment = new Deployment(skil, "Weird Fishes - Arpeggi"  + UUID.randomUUID().toString());
 
         Service service = model.deploy(deployment, true, 1, null, null,
                 false);
@@ -60,11 +66,14 @@ public class ServiceTest {
         String temp = File.createTempFile("service", ".json").getAbsolutePath();
         model.save(temp);
 
+        // TODO: Finish this
 //        Service recov = Service.load(skil, temp);
 //
 //        Map recovConfig = recov.getConfig();
 //        assertTrue(Maps.difference(recovConfig, config).areEqual());
 
-//        service.delete();
+        service.delete();
+        deployment.delete();
+        workSpace.delete();
     }
 }

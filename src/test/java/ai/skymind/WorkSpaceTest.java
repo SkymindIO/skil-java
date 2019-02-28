@@ -26,6 +26,5 @@ public class WorkSpaceTest {
         assertTrue(ws.getLabels().equals(labels));
 
         ws.delete();
-
     }
 }

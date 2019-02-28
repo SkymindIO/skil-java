@@ -14,7 +14,6 @@ import java.util.Arrays;
 public class ModelServingTest {
 
     @Test(timeout=900000)
-    @Ignore
     public void testSkilBasics() throws Exception {
 
         Skil skil = new Skil();
@@ -41,11 +40,7 @@ public class ModelServingTest {
 
                 // Cleaning up
                 service.stop(() -> {
-                    // The IDs of experiment model instance and deployed model instances are
-                    // managed separately. Therefore, we have to get the deployed model's ID.
-                    String modelId = String.valueOf(model.getModelDeployment().getId());
-
-                    deployment.deleteModel(modelId);
+                    service.delete();
                     deployment.delete();
                     workSpace.delete();
                 }); // You Never Wash Up After Yourself

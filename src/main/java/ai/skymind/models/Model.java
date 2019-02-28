@@ -193,7 +193,7 @@ public class Model {
     public Service deploy(Deployment deployment, boolean startServer, int scale,
                           List<String> inputNames, List<String> outputNames, boolean verbose)
             throws ApiException, InterruptedException {
-        return deploy(deployment, startServer, scale, inputNames, outputNames, verbose);
+        return deploy(deployment, startServer, scale, inputNames, outputNames, verbose, null);
     }
 
     /**

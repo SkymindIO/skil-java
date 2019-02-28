@@ -58,7 +58,8 @@ public class Service {
      */
     public void delete() throws ApiException, InterruptedException {
         this.stop();
-        skil.getApi().deleteModel(this.deployment.getDeploymentId(), this.model.getId());
+        skil.getApi().deleteModel(this.deployment.getDeploymentId(),
+                String.valueOf(this.model.getModelDeployment().getId()));
     }
 
     /**
