@@ -160,7 +160,7 @@ public class Model {
         Experiment exp = Experiment.getExperimentById(workSpace, experimentId);
         String modelId = (String) config.get("modelId");
 
-        Model model = getModelById(exp, modelId);
+        Model model = getModelById(modelId, exp);
         model.setName((String) config.get("modelName"));
         return model;
     }
@@ -290,12 +290,12 @@ public class Model {
     /**
      * Get a SKIL model by ID
      *
-     * @param experiment SKIL experiment instance
      * @param modelId valid SKIL Model ID
+     * @param experiment SKIL experiment instance
      * @return Model instance
      * @throws Exception Exception
      */
-    public static Model getModelById(Experiment experiment, String modelId) throws Exception {
+    public static Model getModelById( String modelId, Experiment experiment) throws Exception {
         return new Model(modelId, experiment, "");
     }
 }

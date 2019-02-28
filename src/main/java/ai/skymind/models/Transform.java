@@ -8,12 +8,10 @@ import ai.skymind.services.TransformImageService;
 import ai.skymind.skil.model.ImportModelRequest;
 import ai.skymind.skil.model.ModelEntity;
 import ai.skymind.skil.model.ModelInstanceEntity;
+import com.google.gson.Gson;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -29,14 +27,15 @@ public class Transform extends Model {
 
     private Logger logger = Logger.getLogger(Transform.class.getName());
 
-    private String transformType;
+    private TransformType transformType;
 
-    private Transform(String transformId, Experiment experiment, String transformName) throws Exception {
+    private Transform(String transformId, TransformType transformType, Experiment experiment) throws Exception {
 
         this.experiment = experiment;
         this.workSpace = experiment.getWorkSpace();
         this.skil = this.workSpace.getSkil();
         this.id = transformId;
+        this.transformType = transformType;
 
         ModelInstanceEntity modelEntity = this.skil.getApi().getModelInstance(
                 this.skil.getWorkspaceServerId(), this.id);
@@ -47,15 +46,19 @@ public class Transform extends Model {
 
     }
 
-    public Transform(File transformFile, String transformType, Experiment experiment, String transformId,
-                     String name, String version, String labels, boolean verbose) throws ApiException, Exception {
+    public Transform(File transformFile, TransformType transformType, Experiment experiment) throws Exception {
+        this(transformFile, transformType, experiment, "id_" + UUID.randomUUID().toString(),
+                "name_" + UUID.randomUUID().toString(), "1", "", false);
+    }
+
+    public Transform(File transformFile, TransformType transformType, Experiment experiment, String transformId,
+                     String name, String version, String labels, boolean verbose) throws Exception {
 
         this.experiment = experiment;
         this.workSpace = experiment.getWorkSpace();
         this.skil = workSpace.getSkil();
         this.transformType = transformType;
 
-        // TODO proper file path
         skil.uploadModel(transformFile);
 
         this.modelPath = skil.getModelPath(transformFile);
@@ -82,6 +85,54 @@ public class Transform extends Model {
             logger.info(entity.toString());
         }
     }
+
+    /**
+     * Get the transform config as Map
+     *
+     * @return transform config
+     */
+    @Override
+    public Map<String, Object> getConfig() {
+
+        HashMap<String, Object> config = new HashMap<>();
+        config.put("transformId", id);
+        config.put("transformName", name);
+        config.put("transformType", transformType.getType());
+        config.put("experimentId", experiment.getId());
+        config.put("workspaceId", workSpace.getId());
+        return config;
+    }
+
+
+    /**
+     * Load a transform from file
+     *
+     * @param skil Skil instance
+     * @param fileName file name for file with transform config JSON
+     * @return Transform instance
+     *
+     * @throws FileNotFoundException File not found
+     * @throws ApiException SKIL API exception
+     */
+    public static Model load(Skil skil, String fileName) throws Exception {
+        FileInputStream fis = new FileInputStream(new File(fileName));
+        final Gson gson = new Gson();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+        HashMap<String, Object> config = gson.fromJson(reader, HashMap.class);
+        String workSpaceId = (String) config.get("workspaceId");
+        String experimentId = (String) config.get("experimentId");
+
+        WorkSpace workSpace = WorkSpace.getWorkSpaceById(skil, workSpaceId);
+
+        Experiment exp = Experiment.getExperimentById(workSpace, experimentId);
+        String transformId = (String) config.get("transformId");
+        TransformType transformType =  TransformType.fromString((String) config.get("transformType"));
+
+        Transform transform = getTransformById(transformId, transformType, exp);
+        transform.setName((String) config.get("transformName"));
+        return transform;
+    }
+
 
     public Service deploy(Deployment deployment, boolean startServer, int scale,
                        List<String> inputNames, List<String> outputNames, boolean verbose)
@@ -118,11 +169,11 @@ public class Transform extends Model {
 
             this.service = new Service(this.skil, this, this.deployment, this.modelDeployment);
 
-            if (this.transformType.equals("CSV")){
+            if (this.transformType.getType().equals("CSV")){
                 this.service = new TransformCsvService(skil, this, this.deployment, this.modelDeployment);
-            } else if (this.transformType.equals("array")) {
+            } else if (this.transformType.getType().equals("array")) {
                 this.service = new TransformArrayService(skil, this, this.deployment, this.modelDeployment);
-            } else if (this.transformType.equals("image")) {
+            } else if (this.transformType.getType().equals("image")) {
                 this.service = new TransformImageService(skil, this, this.deployment, this.modelDeployment);
             }
 
@@ -133,8 +184,13 @@ public class Transform extends Model {
         return this.service;
     }
 
-    public static Transform getTransformById(Experiment experiment, String transformId) throws Exception {
-        return new Transform(transformId, experiment, "");
+    public String getType() {
+        return transformType.getType();
+    }
+
+    public static Transform getTransformById(String transformId, TransformType transformType, Experiment experiment)
+            throws Exception {
+        return new Transform(transformId, transformType, experiment);
     }
 
 }
