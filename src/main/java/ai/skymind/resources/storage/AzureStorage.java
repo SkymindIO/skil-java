@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Max Pumperla
  */
-public class AzureStorage extends StorageResource {
+public class        AzureStorage extends StorageResource {
 
     private String name;
     private String credentialUri;

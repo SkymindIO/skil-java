@@ -37,13 +37,16 @@ public class Credentials {
         this.name = name;
 
         AddCredentialsRequest request = new AddCredentialsRequest()
-                .type(type).name(name).uri(uri);
+                .type(this.type)
+                .name(this.name)
+                .uri(this.uri);
         ResourceCredentials credentials = this.skil.getApi().addCredentials(request);
         this.id = credentials.getCredentialId();
     }
 
-    public Credentials(Skil skil, String uri, String name, Long credentialsId) {
+    public Credentials(Skil skil, AddCredentialsRequest.TypeEnum type, String uri, String name, Long credentialsId) {
         this.id = credentialsId;
+        this.type = type;
         this.name = name;
         this.uri = uri;
         this.skil = skil;
