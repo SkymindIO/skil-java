@@ -198,7 +198,21 @@ public class Service {
                         break;
                     }
                 } catch (ApiException e) {
-                    logger.info("Unsuccessful access endpoint attempt, retrying...");
+                    if(modelStarted) {
+                        if (e.getCode() == 404) {
+                            logger.info("Can't find the endpoint to get model details, upgrade your SKIL server.");
+                        } else {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        if(e.getCode() == 404) {
+                            logger.info("Can't find the API test endpoint.");
+                        }
+                        else if(e.getCode() >= 500) {
+                            logger.info("Unsuccessful access endpoint attempt, retrying...");
+                        }
+                    }
                 }
 
                 logger.info("Waiting for deployment");
