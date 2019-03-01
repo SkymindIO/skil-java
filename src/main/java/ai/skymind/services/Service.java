@@ -198,11 +198,11 @@ public class Service {
                         break;
                     }
                 } catch (ApiException e) {
-                    if(modelStarted) {
+                    if(!modelStarted) {
                         if (e.getCode() == 404) {
                             logger.info("Can't find the endpoint to get model details, upgrade your SKIL server.");
                         } else {
-                            e.printStackTrace();
+                            logger.info("Waiting for deployment");
                         }
                     }
                     else {
@@ -211,11 +211,12 @@ public class Service {
                         }
                         else if(e.getCode() >= 500) {
                             logger.info("Unsuccessful access endpoint attempt, retrying...");
+                        } else {
+                            e.printStackTrace();
                         }
                     }
                 }
 
-                logger.info("Waiting for deployment");
             } while (true);
 
             if(callback != null)
