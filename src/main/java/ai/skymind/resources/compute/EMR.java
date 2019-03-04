@@ -66,20 +66,4 @@ public class EMR extends ComputeResource {
         this.clusterId = clusterId;
         this.resourceId = resourceId;
     }
-
-    public String getName(){
-        return this.name;
-    }
-
-    public String getClusterId(){
-        return this.clusterId;
-    }
-
-    public String getRegion(){
-        return this.region;
-    }
-
-    public String getCredentialId(){
-        return this.credentialUri;
-    }
 }

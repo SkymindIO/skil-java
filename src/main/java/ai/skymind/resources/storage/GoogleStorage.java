@@ -68,20 +68,4 @@ public class GoogleStorage extends StorageResource {
         this.projectId = projectId;
         this.bucketName = bucketName;
     }
-
-    public String getName(){
-        return this.name;
-    }
-
-    public String getBucketName(){
-        return this.bucketName;
-    }
-
-    public String getCredentialUri(){
-        return this.credentialUri;
-    }
-
-    public String getProjectId(){
-        return this.projectId;
-    }
 }

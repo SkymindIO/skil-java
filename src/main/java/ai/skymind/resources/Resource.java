@@ -36,8 +36,4 @@ public class Resource {
         this.skil.getApi().deleteResourceById(this.resourceId);
 
     }
-
-    public Long getResourceId(){
-        return this.resourceId;
-    }
 }

@@ -55,16 +55,4 @@ public class AzureStorage extends StorageResource {
         this.name = name;
         this.containerName = containerName;
     }
-
-    public String getName(){
-        return this.name;
-    }
-
-    public String getContainerName(){
-        return this.containerName;
-    }
-
-    public String getCredentialUri(){
-        return this.credentialUri;
-    }
 }

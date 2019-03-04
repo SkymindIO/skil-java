@@ -67,20 +67,4 @@ public class S3 extends StorageResource {
         this.bucket = bucket;
         this.region = region;
     }
-
-    public String getName(){
-        return this.name;
-    }
-
-    public String getBucket(){
-        return this.bucket;
-    }
-
-    public String getCredentialUri(){
-        return this.credentialUri;
-    }
-
-    public String getRegion(){
-        return this.region;
-    }
 }

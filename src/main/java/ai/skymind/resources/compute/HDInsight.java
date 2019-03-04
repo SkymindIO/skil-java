@@ -65,24 +65,4 @@ public class HDInsight extends ComputeResource {
         this.resourceGroupName = resourceGroupName;
         this.clusterName = clusterName;
     }
-
-    public String getName(){
-        return this.name;
-    }
-
-    public String getSubscriptionId(){
-        return this.subscriptionId;
-    }
-
-    public String geteResourceGroupName(){
-        return this.resourceGroupName;
-    }
-
-    public String getClusterName(){
-        return this.clusterName;
-    }
-
-    public String getCredentialId(){
-        return this.credentialUri;
-    }
 }
