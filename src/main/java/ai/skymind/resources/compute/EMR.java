@@ -47,7 +47,6 @@ public class EMR extends ComputeResource {
 
         Object response = this.skil.getApi().addResource(request);
 
-        // TODO test if this casting works
         this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
     }
 
@@ -65,5 +64,21 @@ public class EMR extends ComputeResource {
         this.region = region;
         this.clusterId = clusterId;
         this.resourceId = resourceId;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public String getClusterId(){
+        return this.clusterId;
+    }
+
+    public String getRegion(){
+        return this.region;
+    }
+
+    public String getCredentialId(){
+        return this.credentialUri;
     }
 }

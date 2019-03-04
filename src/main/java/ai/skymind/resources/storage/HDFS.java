@@ -68,4 +68,20 @@ public class HDFS extends StorageResource {
         this.nameNodeHost = nameNodeHost;
         this.nameNodePort = nameNodePort;
     }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public String getNameNodePort(){
+        return this.nameNodePort;
+    }
+
+    public String getNameNodeHost(){
+        return this.nameNodeHost;
+    }
+
+    public String getCredentialId(){
+        return this.credentialUri;
+    }
 }

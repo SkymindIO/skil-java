@@ -67,4 +67,24 @@ public class DataProc extends ComputeResource {
         this.region = region;
         this.clusterName = clusterName;
     }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public String getProjectId(){
+        return this.projectId;
+    }
+
+    public String getRegion(){
+        return this.region;
+    }
+
+    public String getClusterName(){
+        return this.clusterName;
+    }
+
+    public String getCredentialId(){
+        return this.credentialUri;
+    }
 }
