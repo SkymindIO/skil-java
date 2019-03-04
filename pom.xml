@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <url>https://github.com/SkymindIO/SkilJava</url>
+    <url>https://github.com/SkymindIO/skil-java</url>
     <description>Java client for using the SKIL HTTP API</description>
 
     <licenses>
