@@ -53,7 +53,6 @@ public class HDInsight extends ComputeResource {
 
         Object response = this.skil.getApi().addResource(request);
 
-        // TODO test if this casting works
         this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
     }
 
