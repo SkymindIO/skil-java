@@ -40,13 +40,13 @@ public class        AzureStorage extends StorageResource {
         AddResourceRequest request = new AddResourceRequest()
                 .resourceName(this.name)
                 .credentialUri(this.credentialUri)
-                .resourceDetails(details.toString())
+                .resourceDetails(details)
                 .type(AddResourceRequest.TypeEnum.STORAGE)
                 .subType(AddResourceRequest.SubTypeEnum.AZURESTORAGE);
 
         Object response = this.skil.getApi().addResource(request);
 
-        this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
+        this.resourceId = ((Double) ((Map<String, Object>) response).get("resourceId")).longValue();
     }
 
     public AzureStorage(Skil skil, String name, String containerName, Long resourceId) {

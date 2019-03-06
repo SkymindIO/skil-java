@@ -47,13 +47,13 @@ public class HDInsight extends ComputeResource {
         AddResourceRequest request = new AddResourceRequest()
                 .resourceName(this.name)
                 .credentialUri(this.credentialUri)
-                .resourceDetails(details.toString())
+                .resourceDetails(details)
                 .type(AddResourceRequest.TypeEnum.COMPUTE)
                 .subType(AddResourceRequest.SubTypeEnum.HDINSIGHT);
 
         Object response = this.skil.getApi().addResource(request);
 
-        this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
+        this.resourceId = ((Double) ((Map<String, Object>) response).get("resourceId")).longValue();
     }
 
     public HDInsight(Skil skil, String name, String subscriptionId, String resourceGroupName,

@@ -50,13 +50,13 @@ public class DataProc extends ComputeResource {
         AddResourceRequest request = new AddResourceRequest()
                 .resourceName(this.name)
                 .credentialUri(this.credentialUri)
-                .resourceDetails(details.toString())
+                .resourceDetails(details)
                 .type(AddResourceRequest.TypeEnum.COMPUTE)
                 .subType(AddResourceRequest.SubTypeEnum.DATAPROC);
 
         Object response = this.skil.getApi().addResource(request);
 
-        this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
+        this.resourceId = ((Double) ((Map<String, Object>) response).get("resourceId")).longValue();
     }
 
     public DataProc(Skil skil, String name, String projectId, String region, String clusterName, Long resourceId) {

@@ -88,7 +88,7 @@ public class ResourcesTest {
 
 
         HDFS hdfsRes = new HDFS(skil, "hdfs" + UUID.randomUUID(), "test_host",
-                "test_port", "credentials");
+                "12345", "credentials"); // Make sure NameNodePort is not too long. (Should be <=5 characters)
 
         S3 s3Res = new S3( skil, "s3" + UUID.randomUUID(),
                 "test_bucket", "test_region", "credentials");
@@ -140,7 +140,7 @@ public class ResourcesTest {
 
 
         HDFS hdfsRes = new HDFS(skil, "hdfs" + UUID.randomUUID(), "test_host",
-                "test_port", "credentials");
+                "12345", "credentials");
 
         S3 s3Res = new S3( skil, "s3" + UUID.randomUUID(),
                 "test_bucket", "test_region", "credentials");
@@ -209,7 +209,7 @@ public class ResourcesTest {
                 "test_cluster_id");
 
         Resource res = Utils.getResourceDetailsById(skil, emrRes.getResourceId());
-        assertTrue( ((DataProc) res).getName().equals(emrRes.getName()));
+        assertTrue( ((EMR) res).getName().equals(emrRes.getName()));
         assertTrue( ((EMR) res).getClusterId().equals("test_cluster_id"));
         assertTrue( ((EMR) res).getRegion().equals("test_region"));
 //        assertTrue(res.getResourceId() == 0L);
@@ -227,7 +227,7 @@ public class ResourcesTest {
                 "test_cluster", "credentials");
 
         Resource res = Utils.getResourceDetailsById(skil, hdRes.getResourceId());
-        assertTrue( ((DataProc) res).getName().equals(hdRes.getName()));
+        assertTrue( ((HDInsight) res).getName().equals(hdRes.getName()));
         assertTrue( ((HDInsight) res).getClusterName().equals("test_cluster"));
         assertTrue( ((HDInsight) res).geteResourceGroupName().equals("test_resource_group"));
         assertTrue( ((HDInsight) res).getSubscriptionId().equals("test_subscription"));
@@ -261,7 +261,7 @@ public class ResourcesTest {
                 "test_project", "test_bucket", "credentials");
 
         Resource res = Utils.getResourceDetailsById(skil, gsRes.getResourceId());
-        assertTrue( ((AzureStorage) res).getName().equals(gsRes.getName()));
+        assertTrue( ((GoogleStorage) res).getName().equals(gsRes.getName()));
         assertTrue( ((GoogleStorage) res).getBucketName().equals("test_bucket"));
         assertTrue( ((GoogleStorage) res).getProjectId().equals("test_project"));
 //        assertTrue(res.getResourceId() == 0L);
@@ -292,12 +292,12 @@ public class ResourcesTest {
         String name = "hdfs" + UUID.randomUUID();
 
         HDFS hdfsRes = new HDFS(skil, name, "test_host",
-                "test_port", "credentials");
+                "12345", "credentials");
 
         Resource res = Utils.getResourceDetailsById(skil, hdfsRes.getResourceId());
-        assertTrue( ((S3) res).getName().equals(hdfsRes.getName()));
-        assertTrue( ((S3) res).getBucket().equals("test_host"));
-        assertTrue( ((S3) res).getRegion().equals("test_port"));
+        assertTrue( ((HDFS) res).getName().equals(hdfsRes.getName()));
+        assertTrue( ((HDFS) res).getNameNodeHost().equals("test_host"));
+        assertTrue( ((HDFS) res).getNameNodePort().equals("12345"));
 //        assertTrue(res.getResourceId() == 0L);
         res.delete();
     }
@@ -328,7 +328,7 @@ public class ResourcesTest {
         gsRes.delete();
 
         HDFS hdfsRes = new HDFS(skil, "hdfs" + UUID.randomUUID(), "test_host",
-                "test_port", "test_credential");
+                "12345", "test_credential");
         hdfsRes.delete();
 
         AzureStorage asRes = new AzureStorage(skil, "azure" + UUID.randomUUID(),

@@ -40,14 +40,14 @@ public class EMR extends ComputeResource {
 
         AddResourceRequest request = new AddResourceRequest()
                 .resourceName(this.name)
-                .resourceDetails(details.toString())
+                .resourceDetails(details)
                 .credentialUri(this.credentialUri)
                 .type(AddResourceRequest.TypeEnum.COMPUTE)
                 .subType(AddResourceRequest.SubTypeEnum.EMR);
 
         Object response = this.skil.getApi().addResource(request);
 
-        this.resourceId = (Long) ((Map<String, Object>) response).get("resourceId");
+        this.resourceId = ((Double) ((Map<String, Object>) response).get("resourceId")).longValue();
     }
 
     /**
