@@ -186,10 +186,10 @@ public class Service {
                         }
                     } else {
                         // The code below runs when the model has started.
-                        // Sending a test request to get model log file path.
+                        // Sending a test request to get model's meta data.
                         // This is to double check if the model is serving requests.
                         for(String version: versions) {
-                            skil.getApi().logfilepath(this.deployment.getDeploymentSlug(),
+                            skil.getApi().metaGet(this.deployment.getDeploymentSlug(),
                                     version,
                                     this.model.getName());
                         } // How Can You Be Sure?
@@ -330,7 +330,7 @@ public class Service {
 
         MultiPredictResponse response = skil.getApi().multipredict(
                 request,
-                deployment.getName(),
+                deployment.getDeploymentSlug(),
                 version,
                 modelName
         );
@@ -360,7 +360,7 @@ public class Service {
 
         Prediction response = skil.getApi().predict(
                 request,
-                deployment.getName(),
+                deployment.getDeploymentSlug(),
                 version,
                 modelName
         );
