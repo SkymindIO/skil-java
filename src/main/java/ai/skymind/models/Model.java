@@ -282,8 +282,12 @@ public class Model {
      *
      * @throws ApiException SKIL API exception
      */
-    public void delete() throws ApiException {
-        skil.getApi().deleteModelInstance(this.skil.getWorkspaceServerId(), this.id);
+    public void delete() {
+        try {
+            skil.getApi().deleteModelInstance(this.skil.getWorkspaceServerId(), this.id);
+        } catch (ApiException e) {
+            //e.printStackTrace();
+        }
     }
 
 

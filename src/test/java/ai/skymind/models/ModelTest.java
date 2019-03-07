@@ -25,8 +25,8 @@ public class ModelTest {
         File modelFile = new ClassPathResource("keras_mnist.h5").getFile();
         Model model = new Model(modelFile, experiment);
 
-        // model.delete(); // TODO: Adjust this endpoint in skil-clients
-        // experiment.delete(); // TODO: Adjust this endpoint in skil-clients
+        model.delete();
+        experiment.delete();
         workSpace.delete();
     }
 
@@ -58,8 +58,8 @@ public class ModelTest {
         Map recovConfig = recov.getConfig();
         assertTrue(Maps.difference(recovConfig, config).areEqual());
 
-        // model.delete(); // TODO: Adjust this endpoint in skil-clients
-        // experiment.delete(); // TODO: Adjust this endpoint in skil-clients
+        model.delete();
+        experiment.delete();
         workSpace.delete();
     }
 }

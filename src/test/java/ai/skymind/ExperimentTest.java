@@ -16,7 +16,7 @@ public class ExperimentTest {
         Skil skil = new Skil();
         WorkSpace ws = new WorkSpace(skil);
         Experiment experiment = new Experiment(ws);
-        // experiment.delete(); // TODO: Adjust this endpoint in skil-clients
+        experiment.delete();
         ws.delete();
     }
 
@@ -40,7 +40,7 @@ public class ExperimentTest {
         Map recovConfig = recov.getConfig();
         assertTrue(Maps.difference(recovConfig, config).areEqual());
 
-        // experiment.delete(); // TODO: Adjust this endpoint in skil-clients
+        experiment.delete();
         ws.delete();
     }
 

@@ -27,8 +27,8 @@ public class TransformTest {
 
         // @max for you |vvvvvvv|
         // TODO: I'm not sure if workspaces can handle transforms. They are designed to compliment DL models
-        // transform.delete(); // TODO: Adjust this endpoint in skil-clients
-        // experiment.delete(); // TODO: Adjust this endpoint in skil-clients
+        transform.delete();
+        experiment.delete();
         workSpace.delete();
     }
 
@@ -66,8 +66,8 @@ public class TransformTest {
 
         // @max for you |vvvvvvv|
         // TODO: I'm not sure if workspaces can handle transforms. They are designed to compliment DL models
-        // transform.delete(); // TODO: Adjust this endpoint in skil-clients
-        // experiment.delete(); // TODO: Adjust this endpoint in skil-clients
+        transform.delete();
+        experiment.delete();
         workSpace.delete();
     }
 }

@@ -40,7 +40,7 @@ public class Skil {
 
     public Skil() throws Exception {
         Properties properties = new Properties();
-        properties.load(new ClassPathResource("/pom.properties").getInputStream());
+        properties.load(new ClassPathResource("/app.properties").getInputStream());
         userId = properties.getProperty("default.userId") == null ? userId : properties.getProperty("default.userId");
         password = properties.getProperty("default.password") == null ? password : properties.getProperty("default.password");
         host = properties.getProperty("default.host") == null ? host : properties.getProperty("default.host");

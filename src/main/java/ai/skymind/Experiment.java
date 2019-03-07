@@ -109,12 +109,8 @@ public class Experiment {
     /**
      * Deletes this experiment from SKIL.
      */
-    public void delete() {
-        try {
-           skil.getApi().deleteExperiment(this.workSpace.getId(), this.id);
-        } catch (ApiException e) {
-            logger.warning("Error deleting experiment: " + e.toString());
-        }
+    public void delete() throws ApiException {
+       skil.getApi().deleteExperiment(this.skil.getWorkspaceServerId(), this.id);
     }
 
     /**
