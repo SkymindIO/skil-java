@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <url>https://github.com/SkymindIO/SkilJava</url>
+    <url>https://github.com/SkymindIO/skil-java</url>
     <description>Java client for using the SKIL HTTP API</description>
 
     <licenses>
@@ -157,6 +157,23 @@
                 </configuration>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/app.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/app.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
     </build>
 
     <profiles>
@@ -276,6 +293,10 @@
     </dependencies>
 
     <properties>
+        <default.userId>admin</default.userId>
+        <default.password>admin</default.password>
+        <default.host>localhost</default.host>
+        <default.port>9008</default.port>
         <java.version>1.8</java.version>
         <dl4j.version>1.0.0-beta3</dl4j.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>

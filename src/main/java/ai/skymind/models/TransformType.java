@@ -1,20 +1,15 @@
-package ai.skymind.resources;
+package ai.skymind.models;
 
-import ai.skymind.models.TransformType;
+public enum TransformType {
 
-/**
- * Main resource types: compute and store.
- *
- * @author Max Pumperla
- */
-public enum ResourceType {
-
-    COMPUTE("COMPUTE"),
-    STORAGE("STORAGE");
+    CSV("CSV"),
+    ARRAY("array"),
+    IMAGE("image"),
+    CUSTOM("custom");
 
     private String type;
 
-    ResourceType(String type) {
+    TransformType(String type) {
         this.type = type;
     }
 

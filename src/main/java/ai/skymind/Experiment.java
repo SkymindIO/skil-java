@@ -60,7 +60,8 @@ public class Experiment {
     }
 
     private Experiment(WorkSpace workSpace, String experimentId) throws ApiException {
-        ExperimentEntity experimentEntity = workSpace.getSkil().getApi().getExperiment(
+        this.skil = workSpace.getSkil();
+        ExperimentEntity experimentEntity = skil.getApi().getExperiment(
                 skil.getWorkspaceServerId(),
                 experimentId
         );
@@ -78,7 +79,7 @@ public class Experiment {
     /**
      * Get the experiment config as Map
      *
-     * @return deployment config
+     * @return experiment config
      */
     public Map<String, Object> getConfig() {
 
@@ -108,20 +109,16 @@ public class Experiment {
     /**
      * Deletes this experiment from SKIL.
      */
-    public void delete() {
-        try {
-           skil.getApi().deleteExperiment(this.workSpace.getId(), this.id);
-        } catch (ApiException e) {
-            logger.warning("Error deleting experiment: " + e.toString());
-        }
+    public void delete() throws ApiException {
+       skil.getApi().deleteExperiment(this.skil.getWorkspaceServerId(), this.id);
     }
 
     /**
      * Load an experiment from file
      *
      * @param skil Skil instance
-     * @param fileName file name for file with deployment config JSON
-     * @return Deployment instance
+     * @param fileName file name for file with experiment config JSON
+     * @return Experiment instance
      *
      * @throws FileNotFoundException File not found
      * @throws ApiException SKIL API exception

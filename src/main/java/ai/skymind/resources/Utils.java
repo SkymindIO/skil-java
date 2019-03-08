@@ -38,6 +38,19 @@ public class Utils {
     }
 
     /**
+     * Delete every single registered SKIL resource
+     * @param skil SKIL instance
+     * @throws ApiException
+     */
+    public static void deleteAllResources(Skil skil) throws ApiException {
+        List<Resource> list =  getAllResources(skil);
+        for (Resource res: list) {
+            res.delete();
+        }
+
+    }
+
+    /**
      * Get a SKIL Resource by ID
      * @param skil Skil instance
      * @param resourceId resource ID

@@ -76,6 +76,10 @@ public class WorkSpace {
         return id;
     }
 
+    public String getName() { return name;}
+
+    public String getLabels() { return labels;}
+
     public WorkSpace(Skil skil, String name) throws ApiException {
         this(skil, name, "", false);
     }

@@ -13,5 +13,4 @@ public enum EvaluationType {
     EVALUATION,
     REGRESSON_EVALUATION,
     ROC_MULTI_CLASS;
-
 }

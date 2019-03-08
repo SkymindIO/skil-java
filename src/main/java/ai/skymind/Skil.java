@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import ai.skymind.skil.DefaultApi;
@@ -14,6 +15,7 @@ import ai.skymind.skil.model.LoginRequest;
 import ai.skymind.skil.model.LoginResponse;
 import com.google.gson.Gson;
 import com.squareup.okhttp.*;
+import org.nd4j.linalg.io.ClassPathResource;
 
 /**
  * Central class for managing connections with your SKIL server instance.
@@ -37,6 +39,13 @@ public class Skil {
     private Logger logger = Logger.getLogger(Skil.class.getName());
 
     public Skil() throws Exception {
+        Properties properties = new Properties();
+        properties.load(new ClassPathResource("/app.properties").getInputStream());
+        userId = properties.getProperty("default.userId") == null ? userId : properties.getProperty("default.userId");
+        password = properties.getProperty("default.password") == null ? password : properties.getProperty("default.password");
+        host = properties.getProperty("default.host") == null ? host : properties.getProperty("default.host");
+        port = properties.getProperty("default.port") == null ? port : Integer.valueOf(properties.getProperty("default.port"));
+
         this.token = determineToken();
         workspaceServerId = getDefaultServerId();
         setClient();
@@ -116,11 +125,11 @@ public class Skil {
         return workspaceServerId;
     }
 
-    private String getHost() {
+    public String getHost() {
         return this.host;
     }
 
-    private int getPort() {
+    public int getPort() {
         return this.port;
     }
 

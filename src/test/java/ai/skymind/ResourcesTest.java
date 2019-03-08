@@ -14,45 +14,52 @@ import ai.skymind.resources.Utils;
 
 import java.util.UUID;
 import java.util.List;
+
+import org.junit.Before;
 import org.junit.Test;
+
+import static junit.framework.TestCase.assertTrue;
 
 
 public class ResourcesTest {
 
+    @Before
+    public void cleanResources() throws Exception {
+        Skil skil = new Skil();
+        Utils.deleteAllResources(skil); // Clean up before test, to make sure length of resources tests work
+    }
+
     @Test
-    public void testGetResourceById() throws ApiException, Exception {
+    public void testGetResourceById() throws Exception {
         Skil skil = new Skil();
 
-        Long resourceId = 0L;
-        EMR emrRes = new EMR(skil, "emr" + UUID.randomUUID(), "test_region",
-                "test_cluster_id", resourceId);
+        EMR emrRes = new EMR(skil, "emr" + UUID.randomUUID(), "test_region", "credentials",
+                "test_cluster_id");
+        Long resourceId = emrRes.getResourceId();
+
         Resource res = Utils.getResourceById(skil, resourceId);
 
-        assert(resourceId == res.getResourceId());
+        assertTrue(resourceId.equals(res.getResourceId()));
         emrRes.delete();
     }
 
     @Test
-    public void testGetAllResources() throws ApiException, Exception {
+    public void testGetAllResources() throws Exception {
         Skil skil = new Skil();
 
-        EMR emrRes = new EMR(skil, "emr" + UUID.randomUUID(), "test_region",
-                "test_cluster_id", 0L);
+        EMR emrRes = new EMR(skil, "emr" + UUID.randomUUID(), "test_region", "credentials",
+                "test_cluster_id");
 
         DataProc dataRes = new DataProc(skil, "dataProc" + UUID.randomUUID(), "test_project",
-                "test_region", "test_cluster_id", 1L);
+                "test_region", "test_cluster_id", "credentials");
 
         HDInsight hdRes = new HDInsight(skil, "hdInsight" + UUID.randomUUID(),
                 "test_subscription", "test_resource_group",
-                "test_cluser", 2L);
+                "test_cluser", "credentials");
 
         List<Resource> resList = Utils.getAllResources(skil);
 
-        assert(resList.size() == 3);
-
-        assert(resList.get(0).getResourceId() == 0L);
-        assert(resList.get(1).getResourceId() == 1L);
-        assert(resList.get(2).getResourceId() == 2L);
+        assertTrue(resList.size() == 3);
 
         emrRes.delete();
         dataRes.delete();
@@ -60,242 +67,243 @@ public class ResourcesTest {
     }
 
     @Test
-    public void testGetResourceByType() throws ApiException, Exception {
+    public void testGetResourceByType() throws Exception {
         Skil skil = new Skil();
 
-        EMR emrRes = new EMR(skil, "emr" + UUID.randomUUID(), "test_region",
-                "test_cluster_id", 0L);
+        EMR emrRes = new EMR(skil, "emr" + UUID.randomUUID(), "test_region", "credentials",
+                "test_cluster_id");
 
         DataProc dataRes = new DataProc(skil, "dataProc" + UUID.randomUUID(), "test_project",
-                "test_region", "test_cluster_id", 1L);
+                "test_region", "test_cluster_id", "credenteials");
 
         HDInsight hdRes = new HDInsight(skil, "hdInsight" + UUID.randomUUID(),
                 "test_subscription", "test_resource_group",
-                "test_cluser", 2L);
+                "test_cluser", "credentials");
 
         AzureStorage asRes = new AzureStorage(skil, "azure" + UUID.randomUUID(),
-                "test_container", 3L);
+                "test_container", "credentials");
 
         GoogleStorage gsRes = new GoogleStorage( skil,"google" + UUID.randomUUID(),
-                "test_project", "test_bucket", 4L);
+                "test_project", "test_bucket", "credentials");
 
 
         HDFS hdfsRes = new HDFS(skil, "hdfs" + UUID.randomUUID(), "test_host",
-                "test_port", 5L);
+                "12345", "credentials"); // Make sure NameNodePort is not too long. (Should be <=5 characters)
 
         S3 s3Res = new S3( skil, "s3" + UUID.randomUUID(),
-                "test_bucket", "test_region", 6L);
+                "test_bucket", "test_region", "credentials");
 
         List<Resource> computeList = Utils.getResourceByType(skil, ResourceType.COMPUTE);
         List<Resource> storageList = Utils.getResourceByType(skil, ResourceType.STORAGE);
 
-        assert(computeList.size() == 3);
+        assertTrue(computeList.size() == 3);
 
-        assert(computeList.get(0).getResourceId() == 0L);
-        assert(computeList.get(1).getResourceId() == 1L);
-        assert(computeList.get(2).getResourceId() == 2L);
+//        assertTrue(computeList.get(0).getResourceId() == 0L);
+//        assertTrue(computeList.get(1).getResourceId() == 1L);
+//        assertTrue(computeList.get(2).getResourceId() == 2L);
 
-        assert(storageList.size() == 4);
+        assertTrue(storageList.size() == 4);
 
-        assert(storageList.get(3).getResourceId() == 3L);
-        assert(storageList.get(4).getResourceId() == 4L);
-        assert(storageList.get(5).getResourceId() == 5L);
-        assert(storageList.get(6).getResourceId() == 6L);
+//        assertTrue(storageList.get(3).getResourceId() == 3L);
+//        assertTrue(storageList.get(4).getResourceId() == 4L);
+//        assertTrue(storageList.get(5).getResourceId() == 5L);
+//        assertTrue(storageList.get(6).getResourceId() == 6L);
 
         emrRes.delete();
         dataRes.delete();
         asRes.delete();
+        hdRes.delete();
         gsRes.delete();
         hdfsRes.delete();
         s3Res.delete();
     }
 
     @Test
-    public void testGetResourceBySubType() throws ApiException, Exception {
+    public void testGetResourceBySubType() throws Exception {
         Skil skil = new Skil();
 
-        EMR emrRes = new EMR(skil, "emr" + UUID.randomUUID(), "test_region",
-                "test_cluster_id", 0L);
+        EMR emrRes = new EMR(skil, "emr" + UUID.randomUUID(), "test_region", "credentials",
+                "test_cluster_id");
 
         DataProc dataRes = new DataProc(skil, "dataProc" + UUID.randomUUID(), "test_project",
-                "test_region", "test_cluster_id", 1L);
+                "test_region", "test_cluster_id", "credentials");
 
         HDInsight hdRes = new HDInsight(skil, "hdInsight" + UUID.randomUUID(),
                 "test_subscription", "test_resource_group",
-                "test_cluster", 2L);
+                "test_cluster", "credentials");
 
         AzureStorage asRes = new AzureStorage(skil, "azure" + UUID.randomUUID(),
-                "test_container", 3L);
+                "test_container", "credentials");
 
         GoogleStorage gsRes = new GoogleStorage( skil,"google" + UUID.randomUUID(),
-                "test_project", "test_bucket", 4L);
+                "test_project", "test_bucket", "credentials");
 
 
         HDFS hdfsRes = new HDFS(skil, "hdfs" + UUID.randomUUID(), "test_host",
-                "test_port", 5L);
+                "12345", "credentials");
 
         S3 s3Res = new S3( skil, "s3" + UUID.randomUUID(),
-                "test_bucket", "test_region", 6L);
+                "test_bucket", "test_region", "credentials");
 
         List<Resource> emrList = Utils.getResourceBySubType(skil, ResourceSubType.EMR);
-        assert(emrList.size() == 1);
-        assert(emrList.get(0).getResourceId() == 0L);
+        assertTrue(emrList.size() == 1);
+//        assertTrue(emrList.get(0).getResourceId() == 0L);
         emrRes.delete();
 
         List<Resource> dataProcList = Utils.getResourceBySubType(skil, ResourceSubType.DataProc);
-        assert(dataProcList.size() == 1);
-        assert(dataProcList.get(0).getResourceId() == 1L);
+        assertTrue(dataProcList.size() == 1);
+//        assertTrue(dataProcList.get(0).getResourceId() == 1L);
         dataRes.delete();
 
         List<Resource> hdInsightList = Utils.getResourceBySubType(skil, ResourceSubType.HDInsight);
-        assert(hdInsightList.size() == 1);
-        assert(hdInsightList.get(0).getResourceId() == 2L);
+        assertTrue(hdInsightList.size() == 1);
+//        assertTrue(hdInsightList.get(0).getResourceId() == 2L);
         hdRes.delete();
 
         List<Resource> azureList = Utils.getResourceBySubType(skil, ResourceSubType.AzureStorage);
-        assert(azureList.size() == 1);
-        assert(azureList.get(0).getResourceId() == 3L);
+        assertTrue(azureList.size() == 1);
+//        assertTrue(azureList.get(0).getResourceId() == 3L);
         asRes.delete();
 
         List<Resource> googleList = Utils.getResourceBySubType(skil, ResourceSubType.GoogleStorage);
-        assert(googleList.size() == 1);
-        assert(googleList.get(0).getResourceId() == 4L);
+        assertTrue(googleList.size() == 1);
+//        assertTrue(googleList.get(0).getResourceId() == 4L);
         gsRes.delete();
 
         List<Resource> hdfsList = Utils.getResourceBySubType(skil, ResourceSubType.HDFS);
-        assert(hdfsList.size() == 1);
-        assert(hdfsList.get(0).getResourceId() == 5L);
+        assertTrue(hdfsList.size() == 1);
+//        assertTrue(hdfsList.get(0).getResourceId() == 5L);
         hdfsRes.delete();
 
         List<Resource> s3List = Utils.getResourceBySubType(skil, ResourceSubType.S3);
-        assert(s3List.size() == 1);
-        assert(s3List.get(0).getResourceId() == 6L);
+        assertTrue(s3List.size() == 1);
+//        assertTrue(s3List.get(0).getResourceId() == 6L);
         s3Res.delete();
     }
 
     @Test
-    public void testGetDataProcDetailsById() throws ApiException, Exception {
+    public void testGetDataProcDetailsById() throws Exception {
         Skil skil = new Skil();
 
         String name = "dataProc" + UUID.randomUUID();
 
         DataProc dataRes = new DataProc(skil, name, "test_project",
-                "test_region", "test_cluster_id", 0L);
+                "test_region", "test_cluster_id", "credentials");
 
-        Resource res = Utils.getResourceDetailsById(skil, 0L);
-        assert( ((DataProc) res).getName() == name);
-        assert( ((DataProc) res).getProjectId() == "test_project");
-        assert( ((DataProc) res).getRegion() == "test_region");
-        assert( ((DataProc) res).getClusterName() == "test_cluster_id");
-        assert(res.getResourceId() == 0L);
+        Resource res = Utils.getResourceDetailsById(skil, dataRes.getResourceId());
+        assertTrue( ((DataProc) res).getName().equals(dataRes.getName()));
+        assertTrue( ((DataProc) res).getProjectId().equals("test_project"));
+        assertTrue( ((DataProc) res).getRegion().equals("test_region"));
+        assertTrue( ((DataProc) res).getClusterName().equals("test_cluster_id"));
+//        assertTrue(res.getResourceId() == 0L);
         res.delete();
     }
 
     @Test
-    public void testGetEMRDetailsById() throws ApiException, Exception {
+    public void testGetEMRDetailsById() throws Exception {
         Skil skil = new Skil();
 
         String name = "emr" + UUID.randomUUID();
 
-        EMR emrRes = new EMR(skil, name, "test_region",
-                "test_cluster_id", 0L);
+        EMR emrRes = new EMR(skil, name, "test_region", "credentials",
+                "test_cluster_id");
 
-        Resource res = Utils.getResourceDetailsById(skil, 0L);
-        assert( ((EMR) res).getName() == name);
-        assert( ((EMR) res).getClusterId() == "test_cluster_id");
-        assert( ((EMR) res).getRegion() == "test_region");
-        assert(res.getResourceId() == 0L);
+        Resource res = Utils.getResourceDetailsById(skil, emrRes.getResourceId());
+        assertTrue( ((EMR) res).getName().equals(emrRes.getName()));
+        assertTrue( ((EMR) res).getClusterId().equals("test_cluster_id"));
+        assertTrue( ((EMR) res).getRegion().equals("test_region"));
+//        assertTrue(res.getResourceId() == 0L);
         res.delete();
     }
 
     @Test
-    public void testGetHDInsightDetailsById() throws ApiException, Exception {
+    public void testGetHDInsightDetailsById() throws Exception {
         Skil skil = new Skil();
 
         String name = "hd" + UUID.randomUUID();
 
         HDInsight hdRes = new HDInsight(skil, name,
                 "test_subscription", "test_resource_group",
-                "test_cluster", 0L);
+                "test_cluster", "credentials");
 
-        Resource res = Utils.getResourceDetailsById(skil, 0L);
-        assert( ((HDInsight) res).getName() == name);
-        assert( ((HDInsight) res).getClusterName() == "test_cluster");
-        assert( ((HDInsight) res).geteResourceGroupName() == "test_resource_group");
-        assert( ((HDInsight) res).getSubscriptionId() == "test_subscription");
-        assert(res.getResourceId() == 0L);
+        Resource res = Utils.getResourceDetailsById(skil, hdRes.getResourceId());
+        assertTrue( ((HDInsight) res).getName().equals(hdRes.getName()));
+        assertTrue( ((HDInsight) res).getClusterName().equals("test_cluster"));
+        assertTrue( ((HDInsight) res).geteResourceGroupName().equals("test_resource_group"));
+        assertTrue( ((HDInsight) res).getSubscriptionId().equals("test_subscription"));
+//        assertTrue(res.getResourceId() == 0L);
         res.delete();
     }
 
     @Test
-    public void testGetAzureStorageDetailsById() throws ApiException, Exception {
+    public void testGetAzureStorageDetailsById() throws Exception {
         Skil skil = new Skil();
 
         String name = "azure" + UUID.randomUUID();
 
         AzureStorage asRes = new AzureStorage(skil, name,
-                "test_container", 0L);
+                "test_container", "credentials");
 
-        Resource res = Utils.getResourceDetailsById(skil, 0L);
-        assert( ((AzureStorage) res).getName() == name);
-        assert( ((AzureStorage) res).getContainerName() == "test_container");
-        assert(res.getResourceId() == 0L);
+        Resource res = Utils.getResourceDetailsById(skil, asRes.getResourceId());
+        assertTrue( ((AzureStorage) res).getName().equals(asRes.getName()));
+        assertTrue( ((AzureStorage) res).getContainerName().equals("test_container"));
+//        assertTrue(res.getResourceId() == 0L);
         res.delete();
     }
 
     @Test
-    public void testGetGoogleStorageDetailsbyId() throws ApiException, Exception {
+    public void testGetGoogleStorageDetailsbyId() throws Exception {
         Skil skil = new Skil();
 
         String name = "google" + UUID.randomUUID();
 
-        GoogleStorage gsRes = new GoogleStorage( skil,name,
-                "test_project", "test_bucket", 0L);
+        GoogleStorage gsRes = new GoogleStorage( skil, name,
+                "test_project", "test_bucket", "credentials");
 
-        Resource res = Utils.getResourceDetailsById(skil, 0L);
-        assert( ((GoogleStorage) res).getName() == name);
-        assert( ((GoogleStorage) res).getBucketName() == "test_bucket");
-        assert( ((GoogleStorage) res).getProjectId() == "test_project");
-        assert(res.getResourceId() == 0L);
+        Resource res = Utils.getResourceDetailsById(skil, gsRes.getResourceId());
+        assertTrue( ((GoogleStorage) res).getName().equals(gsRes.getName()));
+        assertTrue( ((GoogleStorage) res).getBucketName().equals("test_bucket"));
+        assertTrue( ((GoogleStorage) res).getProjectId().equals("test_project"));
+//        assertTrue(res.getResourceId() == 0L);
         res.delete();
     }
 
     @Test
-    public void testGetS3DetailsbyId() throws ApiException, Exception {
+    public void testGetS3DetailsbyId() throws Exception {
         Skil skil = new Skil();
 
         String name = "s3" + UUID.randomUUID();
 
         S3 s3Res = new S3( skil, name,
-                "test_bucket", "test_region", 0L);
+                "test_bucket", "test_region", "credentials");
 
-        Resource res = Utils.getResourceDetailsById(skil, 0L);
-        assert( ((S3) res).getName() == name);
-        assert( ((S3) res).getBucket() == "test_bucket");
-        assert( ((S3) res).getRegion() == "test_region");
-        assert(res.getResourceId() == 0L);
+        Resource res = Utils.getResourceDetailsById(skil, s3Res.getResourceId());
+        assertTrue( ((S3) res).getName().equals(s3Res.getName()));
+        assertTrue( ((S3) res).getBucket().equals("test_bucket"));
+        assertTrue( ((S3) res).getRegion().equals("test_region"));
+//        assertTrue(res.getResourceId() == 0L);
         res.delete();
     }
 
     @Test
-    public void testGetHDFSDetailsbyId() throws ApiException, Exception {
+    public void testGetHDFSDetailsbyId() throws Exception {
         Skil skil = new Skil();
 
-        String name = "s3" + UUID.randomUUID();
+        String name = "hdfs" + UUID.randomUUID();
 
-        HDFS hdfsRes = new HDFS(skil, "hdfs" + UUID.randomUUID(), "test_host",
-                "test_port", 0L);
+        HDFS hdfsRes = new HDFS(skil, name, "test_host",
+                "12345", "credentials");
 
-        Resource res = Utils.getResourceDetailsById(skil, 0L);
-        assert( ((HDFS) res).getName() == name);
-        assert( ((HDFS) res).getNameNodeHost() == "test_host");
-        assert( ((HDFS) res).getNameNodePort() == "test_port");
-        assert(res.getResourceId() == 0L);
+        Resource res = Utils.getResourceDetailsById(skil, hdfsRes.getResourceId());
+        assertTrue( ((HDFS) res).getName().equals(hdfsRes.getName()));
+        assertTrue( ((HDFS) res).getNameNodeHost().equals("test_host"));
+        assertTrue( ((HDFS) res).getNameNodePort().equals("12345"));
+//        assertTrue(res.getResourceId() == 0L);
         res.delete();
     }
 
     @Test
-    public void testCast() throws ApiException, Exception{
+    public void testCast() throws Exception {
         Skil skil = new Skil();
 
         DataProc dataRes = new DataProc(skil, "dataProc" + UUID.randomUUID(), "test_project",
@@ -320,7 +328,7 @@ public class ResourcesTest {
         gsRes.delete();
 
         HDFS hdfsRes = new HDFS(skil, "hdfs" + UUID.randomUUID(), "test_host",
-                "test_port", "test_credential");
+                "12345", "test_credential");
         hdfsRes.delete();
 
         AzureStorage asRes = new AzureStorage(skil, "azure" + UUID.randomUUID(),
