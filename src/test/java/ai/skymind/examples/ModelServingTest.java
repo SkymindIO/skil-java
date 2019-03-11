@@ -23,19 +23,14 @@ public class ModelServingTest {
         File modelFile = new ClassPathResource("keras_mnist.h5").getFile();
         Model model = new Model(modelFile, experiment);
 
-        Deployment deployment = new Deployment(skil, "myDeployment42");
-        /* Uploading with a scale <= 2, for the test to be applicable to SKIL CE. Later on we can
-         * update this number as required.
-         */
+        Deployment deployment = new Deployment(skil, "bulletproof.. I wish I was");
+
         model.deploy(
             deployment, true, 1, null, null, false,
 
-            // Bulletproof.. I Wish I Was
             (service) -> {
                 INDArray data = Nd4j.rand(1, 784);
-                // Single Predict
                 System.out.println(service.predictSingle(data, "default"));
-                // Multi Predict
                 System.out.println(Arrays.toString(service.predict(new INDArray[] {data}, "v1")));
 
                 // Cleaning up

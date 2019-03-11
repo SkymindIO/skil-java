@@ -71,14 +71,13 @@ lazy val standardSettings = Seq(
   )
 )
 
-//parallelExecution in Test := false
-////scalafmtOnCompile in ThisBuild := true
-////scalafmtTestOnCompile in ThisBuild := true
-//test in assembly := {}
-//assemblyMergeStrategy in assembly := {
-//  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-//  case x                             => MergeStrategy.first
-//}
+parallelExecution in Test := false
+//scalafmtTestOnCompile in ThisBuild := true
+test in assembly := {}
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+  case x                             => MergeStrategy.first
+}
 
 lazy val root = (project in file("."))
   .settings(standardSettings)
