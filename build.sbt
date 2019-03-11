@@ -17,6 +17,6 @@ lazy val root = (project in file(".")).
       "io.gsonfire" % "gson-fire" % "1.8.0" % "compile",
       "junit" % "junit" % "4.12" % "test",
       "com.novocode" % "junit-interface" % "0.10" % "test",
-      "ai.skymind" % "skil-client" % version
+      "ai.skymind" % "skil-client" % "1.2.0-SNAPSHOT"
     )
   )
