@@ -41,7 +41,8 @@ libraryDependencies ++= {
     "org.threeten" % "threetenbp" % "1.3.5" % "compile",
     "io.gsonfire" % "gson-fire" % "1.8.0" % "compile",
     "junit" % "junit" % "4.12" % "test",
-    "com.novocode" % "junit-interface" % "0.10" % "test"
+    "com.novocode" % "junit-interface" % "0.10" % "test",
+    "org.projectlombok" % "lombok" % "1.18.2"
   )
 }
 
