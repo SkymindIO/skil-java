@@ -278,11 +278,17 @@
             <artifactId>gson-fire</artifactId>
             <version>${gson-fire.version}</version>
         </dependency>
-            <dependency>
-                <groupId>org.threeten</groupId>
-                <artifactId>threetenbp</artifactId>
-                <version>${threetenbp.version}</version>
-            </dependency>
+        <dependency>
+            <groupId>org.threeten</groupId>
+            <artifactId>threetenbp</artifactId>
+            <version>${threetenbp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId> org.apache.zeppelin</groupId>
+            <artifactId>zeppelin-spark_2.11</artifactId>
+            <version>${zeppelin.version}</version>
+            <!--<scope>provided</scope>-->
+        </dependency>
         <!-- test dependencies -->
         <dependency>
             <groupId>junit</groupId>
@@ -318,5 +324,6 @@
         <junit-version>4.12</junit-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.version>1.18.2</lombok.version>
+        <zeppelin.version>0.7.3</zeppelin.version>
     </properties>
 </project>
