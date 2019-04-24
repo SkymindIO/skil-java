@@ -30,7 +30,10 @@ public class ModelServingTest {
 
             (service) -> {
                 INDArray data = Nd4j.rand(1, 784);
+                System.out.println(service.predictSingle(data));
                 System.out.println(service.predictSingle(data, "default"));
+
+                System.out.println(Arrays.toString(service.predict(new INDArray[] {data})));
                 System.out.println(Arrays.toString(service.predict(new INDArray[] {data}, "v1")));
 
                 // Cleaning up
