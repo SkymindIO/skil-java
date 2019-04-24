@@ -122,9 +122,8 @@ public class Transform extends Model {
         String workSpaceId = (String) config.get("workspaceId");
         String experimentId = (String) config.get("experimentId");
 
-        WorkSpace workSpace = WorkSpace.getWorkSpaceById(skil, workSpaceId);
-
-        Experiment exp = Experiment.getExperimentById(workSpace, experimentId);
+//        WorkSpace workSpace = WorkSpace.getWorkSpaceById(skil, workSpaceId);
+        Experiment exp = Experiment.getExperimentById(skil, experimentId);
         String transformId = (String) config.get("transformId");
         TransformType transformType =  TransformType.fromString((String) config.get("transformType"));
 

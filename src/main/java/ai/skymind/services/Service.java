@@ -128,9 +128,7 @@ public class Service {
         String experimentId = (String) config.get("experimentId");
 
 
-        WorkSpace workSpace = WorkSpace.getWorkSpaceById(skil, workSpaceId);
-
-        Experiment exp = Experiment.getExperimentById(workSpace, experimentId);
+        Experiment exp = Experiment.getExperimentById(skil, experimentId);
         String modelId = (String) config.get("modelId");
 
         Model model = Model.getModelById(modelId, exp);
