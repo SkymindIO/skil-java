@@ -2,6 +2,7 @@ package ai.skymind.examples;
 
 import ai.skymind.*;
 import ai.skymind.models.Model;
+import ai.skymind.services.Service;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -45,4 +46,20 @@ public class ModelServingTest {
             }
         );
     }
+
+    @Test(timeout=900000)
+    public void testSkilBasicNoCallback() throws Exception {
+
+        Skil skil = new Skil();
+        WorkSpace workSpace = new WorkSpace(skil);
+        Experiment experiment = new Experiment(workSpace);
+
+        File modelFile = new ClassPathResource("keras_mnist.h5").getFile();
+        Model model = new Model(modelFile, experiment);
+
+        Deployment deployment = new Deployment(skil, "bulletproof.. I wish I was");
+
+        Service service = model.deploy(deployment, true, 1, null, null, false, null);
+        INDArray data = Nd4j.rand(1, 784);
+        System.out.println(service.predictSingle(data));    }
 }
