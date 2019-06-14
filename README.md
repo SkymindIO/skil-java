@@ -42,12 +42,20 @@ mvn clean deploy
 Maven users can simply add this dependency to their project's POM:
 
 ```xml
-<dependency>
-  <groupId>ai.skymind</groupId>
-  <artifactId>skil-java</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
-  <scope>compile</scope>
-</dependency>
+<repositories>
+    <repository>
+        <id>snapshots</id>
+        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+</repositories>
+
+<dependencies>
+  <dependency>
+    <groupId>ai.skymind</groupId>
+    <artifactId>skil-java</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
+  </dependency>
+</dependencies>
 ```
 
 
