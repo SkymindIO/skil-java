@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 public class ExperimentTest {
@@ -28,9 +29,9 @@ public class ExperimentTest {
                 "creep", "how do you do?", false);
 
         Map config = experiment.getConfig();
-        assertTrue(config.get("experimentId").equals(experiment.getId()));
-        assertTrue(config.get("experimentName").equals("creep"));
-        assertTrue(config.get("workspaceId").equals(experiment.getWorkSpace().getId()));
+        assertEquals(config.get("experimentId"), experiment.getId());
+        assertEquals("creep", config.get("experimentName"));
+        assertEquals(config.get("workspaceId"), experiment.getWorkSpace().getId());
 
         String temp = File.createTempFile("experiment", ".json").getAbsolutePath();
         experiment.save(temp);

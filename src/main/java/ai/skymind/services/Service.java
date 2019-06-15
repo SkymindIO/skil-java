@@ -128,9 +128,7 @@ public class Service {
         String experimentId = (String) config.get("experimentId");
 
 
-        WorkSpace workSpace = WorkSpace.getWorkSpaceById(skil, workSpaceId);
-
-        Experiment exp = Experiment.getExperimentById(workSpace, experimentId);
+        Experiment exp = Experiment.getExperimentById(skil, experimentId);
         String modelId = (String) config.get("modelId");
 
         Model model = Model.getModelById(modelId, exp);
@@ -307,6 +305,18 @@ public class Service {
         return Nd4j.create(floatData, intShape);
     }
 
+    /**
+     * Predict a batch of data on the default version
+     * of the deployed model.
+     *
+     * @param data Model input, array of INDArrays
+     * @return Model output, array of INDArrays
+     * @throws ApiException SKIL API exception
+     */
+    public INDArray[] predict(INDArray[] data) throws ApiException {
+        return predict(data, "default");
+    }
+
 
     /**
      * Predict a batch of data.
@@ -341,6 +351,18 @@ public class Service {
             out[i] = (toNd4jArray(outputs.get(i)));
         }
         return out;
+    }
+
+    /**
+     * Predict a single data point on the default version
+     * of the deployed model.
+     *
+     * @param data Model input, single INDArray
+     * @return Model output, single NDArray
+     * @throws ApiException SKIL API exception
+     */
+    public INDArray predictSingle(INDArray data) throws ApiException {
+        return  predictSingle(data, "default");
     }
 
     /**

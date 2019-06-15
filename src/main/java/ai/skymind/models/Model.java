@@ -154,10 +154,8 @@ public class Model {
         String workSpaceId = (String) config.get("workspaceId");
         String experimentId = (String) config.get("experimentId");
 
-
-        WorkSpace workSpace = WorkSpace.getWorkSpaceById(skil, workSpaceId);
-
-        Experiment exp = Experiment.getExperimentById(workSpace, experimentId);
+//        WorkSpace workSpace = WorkSpace.getWorkSpaceById(skil, workSpaceId);
+        Experiment exp = Experiment.getExperimentById(skil, experimentId);
         String modelId = (String) config.get("modelId");
 
         Model model = getModelById(modelId, exp);

@@ -2,11 +2,10 @@ package ai.skymind;
 
 import ai.skymind.skil.model.ExperimentEntity;
 import com.google.gson.Gson;
+import org.apache.zeppelin.spark.ZeppelinContext;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 
 
@@ -59,14 +58,17 @@ public class Experiment {
         }
     }
 
-    private Experiment(WorkSpace workSpace, String experimentId) throws ApiException {
-        this.skil = workSpace.getSkil();
+    private Experiment(Skil skil, String experimentId) throws ApiException {
+        this.skil = skil;
         ExperimentEntity experimentEntity = skil.getApi().getExperiment(
                 skil.getWorkspaceServerId(),
                 experimentId
         );
+
+        String workSpaceId = experimentEntity.getModelHistoryId();
+        WorkSpace ws = WorkSpace.getWorkSpaceById(skil, workSpaceId);
         this.experimentEntity = experimentEntity;
-        this.workSpace = workSpace;
+        this.workSpace = ws;
         this.id = experimentId;
         this.name = experimentEntity.getExperimentName();
     }
@@ -128,13 +130,35 @@ public class Experiment {
         final Gson gson = new Gson();
         final BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
         HashMap<String, Object> config = gson.fromJson(reader, HashMap.class);
-        String workSpaceId = (String) config.get("workspaceId");
         String experimentId = (String) config.get("experimentId");
 
 
-        WorkSpace workSpace = WorkSpace.getWorkSpaceById(skil, workSpaceId);
+        return getExperimentById(skil, experimentId);
+    }
 
-        return getExperimentById(workSpace, experimentId);
+    /**
+     * Get the SKIL experiment associated with this Zeppelin notebook.
+     *
+     * Note that this can only be called from within a SKIL Zeppelin notebook.
+     *
+     * @param skil Skil instance
+     * @param context ZeppelinContext instance
+     * @return The SKIL Experiment for this notebook.
+     */
+    public static Experiment currentSkilExperiment(Skil skil, ZeppelinContext context) throws Exception {
+        String noteId = context.getInterpreterContext().getNoteId();
+        List<ExperimentEntity> experiments = getAllExperimentEntities(skil);
+        Optional<String> experimentId = experiments
+                .stream()
+                .filter(e -> e.getNotebookUrl().contains(noteId))
+                .map(ExperimentEntity::getExperimentId)
+                .findFirst();
+        if (experimentId.isPresent()) {
+            return getExperimentById(skil, experimentId.get());
+        } else {
+            throw new Exception("Experiment ID not found.");
+        }
+        // TODO: we don't have SKILEnvironment here, which is needed for saveModel and copyModel
     }
 
     public WorkSpace getWorkSpace() {
@@ -145,8 +169,61 @@ public class Experiment {
         return id;
     }
 
-    public static Experiment getExperimentById(WorkSpace workSpace, String experimentId) throws ApiException {
-        return new Experiment(workSpace, experimentId);
+    /**
+     * Get experiment by ID
+     *
+     * @param skil SKIL instance
+     * @param experimentId Valid experiment ID in that workspace
+     * @return the Experiment for that ID
+     * @throws ApiException API exception
+     */
+    public static Experiment getExperimentById(Skil skil, String experimentId) throws ApiException {
+        return new Experiment(skil, experimentId);
+    }
+
+    /**
+     * Get all experiments from a workspace
+     *
+     * @param workSpace a WorkSpace
+     * @return a list of Experiments
+     */
+    public static List<Experiment> getAllWorkspaceExperiments(WorkSpace workSpace) throws ApiException {
+
+        // TODO: this is simply wrong in skil-clients. Needs fix upstream
+        ExperimentEntity experimentEntities = workSpace.getSkil().getApi().getExperimentsForModelHistory(
+                workSpace.getSkil().getWorkspaceServerId(),
+                workSpace.getId()
+        );
+        String id = experimentEntities.getExperimentId();
+        return Collections.singletonList(getExperimentById(workSpace.getSkil(), id));
+    }
+
+    /**
+     * Get all experiments from a workspace
+     *
+     * @param skil a Skil instance
+     * @return a list of Experiments
+     */
+    public static List<Experiment> getAllExperiments(Skil skil) throws ApiException {
+
+        List<ExperimentEntity> experimentEntities = getAllExperimentEntities(skil);
+        ArrayList result = new ArrayList();
+        for (ExperimentEntity exp: experimentEntities) {
+            result.add(getExperimentById(skil, exp.getExperimentId()));
+        }
+        return result;
+    }
+
+    /**
+     * Get all experiment entities from a workspace
+     *
+     * @param skil a Skil instance
+     * @return a list of ExperimentEntity objects
+     */
+    private static List<ExperimentEntity> getAllExperimentEntities(Skil skil) throws ApiException {
+        return skil.getApi().listAllExperiments(
+                skil.getWorkspaceServerId()
+        );
     }
 
 }
